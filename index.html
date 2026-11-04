@@ -1,0 +1,2647 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ЕГОРСОЛОВЕЙБЕТ — Казино Свина</title>
+<style>
+  :root {
+    --bg-0: #05020f; --bg-1: #0d0526; --bg-2: #1a0a3d;
+    --gold: #ffd23f; --gold-2: #ffb800; --gold-3: #ff8a00;
+    --pink: #ff4fa3; --pink-2: #ff1f7a;
+    --mint: #00ffb3; --mint-2: #00c98b;
+    --purple: #7b2cff; --purple-2: #a855f7;
+    --cyan: #22d3ee;
+    --text: #fff6ff; --muted: #b7a8d9;
+    --card: rgba(255,255,255,0.05); --card-2: rgba(255,255,255,0.09);
+    --border: rgba(255,255,255,0.12);
+    --glow-gold: 0 0 30px rgba(255,210,63,0.55);
+    --glow-pink: 0 0 30px rgba(255,79,163,0.55);
+    --glow-mint: 0 0 30px rgba(0,255,179,0.45);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; overflow-x: hidden; }
+  body { font-family: "Inter", "Segoe UI", Arial, sans-serif; background: var(--bg-0); color: var(--text); min-height: 100vh; }
+
+  .bg-decor { position: fixed; inset: 0; z-index: -3; overflow: hidden;
+    background: radial-gradient(circle at 15% 10%, rgba(123,44,255,0.4), transparent 45%),
+      radial-gradient(circle at 85% 15%, rgba(255,79,163,0.35), transparent 45%),
+      radial-gradient(circle at 50% 100%, rgba(0,255,179,0.2), transparent 55%),
+      linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 50%, var(--bg-2) 100%); }
+  .bg-decor .blob { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.6; animation: floatBlob 14s ease-in-out infinite; }
+  .bg-decor .b1 { width: 400px; height: 400px; background: var(--purple); top: -100px; left: -120px; }
+  .bg-decor .b2 { width: 340px; height: 340px; background: var(--pink); top: 30%; right: -140px; animation-delay: -4s; }
+  .bg-decor .b3 { width: 300px; height: 300px; background: var(--mint); bottom: -100px; left: 30%; animation-delay: -8s; }
+  @keyframes floatBlob { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(50px,-40px) scale(1.15); } }
+
+  .coin-rain { position: fixed; inset: 0; z-index: -2; pointer-events: none; overflow: hidden; }
+  .coin-particle { position: absolute; top: -40px; font-size: 20px; animation: coinFall linear infinite; opacity: 0.85; filter: drop-shadow(0 0 6px rgba(255,210,63,0.8)); }
+  @keyframes coinFall { 0% { transform: translateY(0) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
+
+  .app { display: flex; min-height: 100vh; }
+
+  .sidebar { width: 230px; flex-shrink: 0; background: rgba(8,3,20,0.85);
+    backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-right: 1px solid var(--border); padding: 18px 12px; display: flex; flex-direction: column; gap: 5px;
+    position: sticky; top: 0; height: 100vh; overflow-y: auto; z-index: 40; }
+  .logo { display: flex; align-items: center; gap: 10px; padding: 8px 10px 18px; font-weight: 900; font-size: 1rem; letter-spacing: 0.5px; }
+  .logo-coin { width: 38px; height: 38px; border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #fff6b0, var(--gold) 40%, var(--gold-3) 90%);
+    display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+    box-shadow: var(--glow-gold), inset 0 -3px 6px rgba(0,0,0,0.3); animation: spinCoin 8s linear infinite;
+    border: 2px solid rgba(255,255,255,0.4); flex-shrink: 0; overflow: hidden; }
+  .logo-coin img { width: 100%; height: 100%; object-fit: cover; }
+  @keyframes spinCoin { to { transform: rotateY(360deg); } }
+  .logo-text { background: linear-gradient(90deg, var(--gold), var(--pink), var(--mint), var(--gold));
+    background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: shine 6s linear infinite; line-height: 1.1; font-size: 0.9rem; }
+  @keyframes shine { to { background-position: 300% 0; } }
+
+  .nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 13px; border-radius: 14px;
+    cursor: pointer; font-size: 0.84rem; font-weight: 700; color: var(--muted);
+    border: none; background: transparent; width: 100%; text-align: left; font-family: inherit; transition: all 0.18s; }
+  .nav-item .icon { font-size: 1.1rem; width: 22px; text-align: center; }
+  .nav-item:hover { background: var(--card); color: var(--text); }
+  .nav-item.active { background: linear-gradient(90deg, rgba(255,210,63,0.18), transparent); color: var(--gold); box-shadow: inset 3px 0 0 var(--gold); }
+  .nav-divider { height: 1px; background: var(--border); margin: 8px 4px; }
+  .nav-label { font-size: 0.64rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); padding: 10px 14px 3px; opacity: 0.6; }
+
+  .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+  .topbar { position: sticky; top: 0; z-index: 30; backdrop-filter: blur(20px) saturate(180%);
+    background: rgba(8,3,20,0.7); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 12px 20px; flex-wrap: wrap; }
+  .page-title { font-weight: 900; font-size: 1rem; }
+  .topbar .actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .balance-chip { display: flex; align-items: center; gap: 8px; padding: 9px 18px; border-radius: 100px;
+    background: linear-gradient(135deg, rgba(255,210,63,0.18), rgba(255,79,163,0.18));
+    border: 1px solid rgba(255,210,63,0.45); box-shadow: var(--glow-gold);
+    font-weight: 800; font-size: 0.92rem; transition: transform 0.2s; }
+  .balance-chip.bump { transform: scale(1.08); }
+  .balance-chip .val { color: var(--gold); font-size: 1.08rem; }
+
+  .btn { border: none; border-radius: 100px; padding: 10px 18px; font-weight: 800; font-size: 0.82rem;
+    cursor: pointer; font-family: inherit; transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+    position: relative; overflow: hidden; }
+  .btn::after { content: ""; position: absolute; inset: 0; background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.45) 50%, transparent 70%); transform: translateX(-100%); transition: transform 0.6s; }
+  .btn:hover::after { transform: translateX(100%); }
+  .btn:hover { transform: translateY(-2px); }
+  .btn:active { transform: translateY(0); }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+  .btn-gold { background: linear-gradient(135deg, var(--gold), var(--gold-3)); color: #3a2000; box-shadow: 0 8px 24px rgba(255,138,0,0.5); }
+  .btn-pink { background: linear-gradient(135deg, var(--pink), var(--pink-2)); color: #fff; box-shadow: 0 8px 24px rgba(255,31,122,0.5); }
+  .btn-mint { background: linear-gradient(135deg, var(--mint), var(--mint-2)); color: #002b1d; box-shadow: 0 8px 24px rgba(0,255,179,0.4); }
+  .btn-ghost { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+  .btn-ghost:hover { background: var(--card-2); }
+  .btn-red { background: linear-gradient(135deg, #ff5252, #b71c1c); color: #fff; box-shadow: 0 8px 24px rgba(255,82,82,0.5); }
+
+  .hero-party { position: relative; min-height: calc(100vh - 70px); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; overflow: hidden; }
+  .party-lights { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+  .party-lights .beam { position: absolute; top: -20%; width: 180px; height: 140%;
+    background: linear-gradient(180deg, transparent, rgba(255,210,63,0.25), transparent);
+    filter: blur(20px); transform-origin: top center; animation: sweep 6s ease-in-out infinite; }
+  .beam.b1 { left: 10%; background: linear-gradient(180deg, transparent, rgba(255,79,163,0.3), transparent); }
+  .beam.b2 { left: 40%; background: linear-gradient(180deg, transparent, rgba(0,255,179,0.28), transparent); animation-delay: -2s; }
+  .beam.b3 { left: 70%; background: linear-gradient(180deg, transparent, rgba(123,44,255,0.3), transparent); animation-delay: -4s; }
+  @keyframes sweep { 0%,100% { transform: rotate(-15deg); opacity: 0.5; } 50% { transform: rotate(15deg); opacity: 1; } }
+
+  .disco-ball { position: absolute; font-size: 2rem; animation: discoSpin 4s linear infinite; filter: drop-shadow(0 0 14px rgba(255,210,63,0.9)); z-index: 1; }
+  .disco-ball.d1 { top: 8%; left: 12%; } .disco-ball.d2 { top: 15%; right: 14%; animation-delay: -1.5s; }
+  .disco-ball.d3 { bottom: 20%; left: 8%; animation-delay: -3s; font-size: 1.5rem; }
+  .disco-ball.d4 { bottom: 25%; right: 10%; animation-delay: -2s; font-size: 1.6rem; }
+  @keyframes discoSpin { to { transform: rotate(360deg); } }
+
+  .flying-money { position: absolute; font-size: 2rem; pointer-events: none; animation: flyAround 8s ease-in-out infinite; filter: drop-shadow(0 0 10px rgba(0,255,179,0.6)); z-index: 1; }
+  .flying-money.m1 { top: 20%; left: 15%; } .flying-money.m2 { top: 30%; right: 18%; animation-delay: -2s; }
+  .flying-money.m3 { bottom: 30%; left: 20%; animation-delay: -4s; font-size: 2.6rem; }
+  .flying-money.m4 { bottom: 25%; right: 15%; animation-delay: -6s; }
+  .flying-money.m5 { top: 12%; left: 45%; animation-delay: -3s; font-size: 2.2rem; }
+  .flying-money.m6 { bottom: 15%; right: 40%; animation-delay: -5s; }
+  @keyframes flyAround { 0%,100% { transform: translate(0,0) rotate(0deg); } 25% { transform: translate(30px,-40px) rotate(15deg); } 50% { transform: translate(-20px,-70px) rotate(-10deg); } 75% { transform: translate(-40px,-20px) rotate(10deg); } }
+
+  .party-title { position: relative; z-index: 3; font-size: clamp(1.8rem, 5.5vw, 3.6rem); font-weight: 900; line-height: 1; margin-bottom: 6px;
+    background: linear-gradient(90deg, var(--gold), var(--pink), var(--mint), var(--cyan), var(--gold)); background-size: 400% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent; animation: shine 4s linear infinite;
+    filter: drop-shadow(0 0 30px rgba(255,210,63,0.5)); text-transform: uppercase; letter-spacing: 1px; }
+  .party-sub { position: relative; z-index: 3; font-size: clamp(0.8rem, 1.5vw, 1rem); color: var(--muted); font-weight: 600; margin-bottom: 10px; letter-spacing: 0.5px; }
+  .party-sub b { color: var(--gold); }
+
+  .pig-hero-stage { position: relative; z-index: 3; width: min(65vw, 420px); height: min(65vw, 420px); display: flex; align-items: center; justify-content: center; margin: 6px 0; cursor: pointer; transition: transform 0.2s; }
+  .pig-hero-stage:hover { transform: scale(1.03); }
+  .pig-hero-stage:active { transform: scale(0.98); }
+  .pig-hero-stage::before { content: ""; position: absolute; inset: -8%; border-radius: 50%; background: radial-gradient(circle, rgba(255,210,63,0.4), rgba(255,79,163,0.2), transparent 70%); animation: pulseGlow 3s ease-in-out infinite; z-index: -1; }
+  @keyframes pulseGlow { 0%,100% { transform: scale(1); opacity: 0.7; } 50% { transform: scale(1.12); opacity: 1; } }
+  .pig-svg-big { width: 100%; height: 100%; animation: pigDance 2.4s ease-in-out infinite; filter: drop-shadow(0 25px 40px rgba(0,0,0,0.6)); }
+  @keyframes pigDance { 0%,100% { transform: translateY(0) rotate(-3deg); } 25% { transform: translateY(-14px) rotate(2deg); } 50% { transform: translateY(-4px) rotate(4deg); } 75% { transform: translateY(-18px) rotate(-2deg); } }
+  .pig-svg-big .chain { animation: chainSwing 2.4s ease-in-out infinite; transform-origin: 50% 20%; }
+  @keyframes chainSwing { 0%,100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+  .pig-svg-big .money-float { animation: moneyFloat 2s ease-in-out infinite; }
+  .pig-svg-big .money-float:nth-child(2) { animation-delay: -0.7s; }
+  .pig-svg-big .money-float:nth-child(3) { animation-delay: -1.4s; }
+  @keyframes moneyFloat { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-12px) rotate(8deg); } }
+  .pig-svg-big .blush { animation: blushPulse 1.5s ease-in-out infinite; }
+  @keyframes blushPulse { 0%,100% { opacity: 0.7; } 50% { opacity: 1; } }
+  .pig-svg-big .sunglasses { animation: glassesShine 3s ease-in-out infinite; }
+  @keyframes glassesShine { 0%,100% { filter: drop-shadow(0 0 6px rgba(255,210,63,0.8)); } 50% { filter: drop-shadow(0 0 16px rgba(255,210,63,1)); } }
+
+  .money-burst { position: absolute; font-size: 1.8rem; pointer-events: none; z-index: 10; animation: burstOut 1.2s ease-out forwards; }
+  @keyframes burstOut { 0% { transform: translate(0,0) scale(0.5) rotate(0deg); opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)) scale(1.3) rotate(var(--rot)); opacity: 0; } }
+
+  .click-hint { position: relative; z-index: 3; font-size: 0.85rem; font-weight: 800; color: var(--gold); padding: 10px 20px; border-radius: 100px;
+    background: rgba(255,210,63,0.12); border: 1px solid rgba(255,210,63,0.4); animation: hintPulse 1.8s ease-in-out infinite; margin-top: 4px; cursor: pointer; }
+  @keyframes hintPulse { 0%,100% { transform: scale(1); box-shadow: 0 0 0 rgba(255,210,63,0.5); } 50% { transform: scale(1.04); box-shadow: 0 0 24px rgba(255,210,63,0.5); } }
+
+  .party-cta { position: relative; z-index: 3; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 18px; }
+
+  .container { padding: 22px; max-width: 1200px; margin: 0 auto; width: 100%; }
+  .page { display: none; }
+  .page.active { display: block; }
+  .page.active .container { animation: fadeUp 0.3s ease-out; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-bottom: 14px; transition: color 0.15s; border: none; background: none; font-family: inherit; }
+  .back-link:hover { color: var(--gold); }
+
+  .section-title { font-size: 1.1rem; font-weight: 900; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+  .section-title::before { content: ""; width: 4px; height: 22px; border-radius: 4px; background: linear-gradient(180deg, var(--gold), var(--pink)); box-shadow: var(--glow-gold); }
+
+  .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; margin-bottom: 26px; }
+  .game-card { position: relative; background: linear-gradient(160deg, var(--card-2), var(--card)); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; cursor: pointer; transition: transform 0.25s cubic-bezier(0.2,0.9,0.3,1.3), border-color 0.2s, box-shadow 0.2s; backdrop-filter: blur(8px); }
+  .game-card:hover { transform: translateY(-6px) scale(1.02); border-color: var(--gold); box-shadow: 0 15px 40px rgba(255,210,63,0.25); }
+  .game-card .thumb { height: 110px; display: flex; align-items: center; justify-content: center; font-size: 3.2rem; background: linear-gradient(135deg, rgba(123,44,255,0.35), rgba(255,79,163,0.35)); position: relative; overflow: hidden; }
+  .game-card .thumb::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.35), transparent 60%); pointer-events: none; }
+  .game-card .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .game-card .name { padding: 12px 14px; font-weight: 800; font-size: 0.86rem; display: flex; align-items: center; justify-content: space-between; }
+  .game-card .play-dot { width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg, var(--mint), var(--mint-2)); display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: #002b1d; box-shadow: 0 0 12px rgba(0,255,179,0.7); }
+  .game-card .badge { position: absolute; top: 10px; right: 10px; background: linear-gradient(135deg, var(--pink), var(--pink-2)); color: #fff; font-size: 0.6rem; font-weight: 900; padding: 3px 8px; border-radius: 6px; letter-spacing: 0.5px; text-transform: uppercase; box-shadow: 0 4px 14px rgba(255,31,122,0.6); animation: pulseBadge 1.8s ease-in-out infinite; }
+  @keyframes pulseBadge { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+  .game-card .badge.hot { background: linear-gradient(135deg, #ff8a00, #ff2e00); }
+  .game-card .badge.new { background: linear-gradient(135deg, var(--mint), var(--mint-2)); color: #002b1d; }
+
+  .play-layout { display: grid; grid-template-columns: 1fr 340px; gap: 18px; }
+  @media (max-width: 900px) { .play-layout { grid-template-columns: 1fr; } }
+
+  .stage { background: linear-gradient(160deg, var(--card-2), var(--card)); border: 1px solid var(--border); border-radius: 24px; padding: 24px 18px; min-height: 440px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; backdrop-filter: blur(10px); }
+  .stage::before { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(from 0deg, transparent, rgba(255,210,63,0.08), transparent 30%); animation: rotateBg 12s linear infinite; pointer-events: none; }
+  @keyframes rotateBg { to { transform: rotate(360deg); } }
+
+  .panel { background: linear-gradient(160deg, var(--card-2), var(--card)); border: 1px solid var(--border); border-radius: 24px; padding: 20px; backdrop-filter: blur(10px); }
+  .panel h3 { font-size: 0.78rem; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+
+  .bet-input-wrap { position: relative; margin-bottom: 12px; }
+  .bet-input-wrap input { width: 100%; background: rgba(0,0,0,0.35); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px 14px 44px; color: var(--text); font-size: 1.15rem; font-weight: 900; font-family: inherit; transition: border-color 0.15s, box-shadow 0.15s; }
+  .bet-input-wrap input:focus { outline: none; border-color: var(--gold); box-shadow: var(--glow-gold); }
+  .bet-input-wrap .cur { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--gold); font-weight: 900; font-size: 1rem; }
+  .bet-quick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 14px; }
+  .bet-quick button { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); border-radius: 10px; padding: 9px 4px; font-size: 0.72rem; font-weight: 800; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+  .bet-quick button:hover { border-color: var(--gold); color: var(--gold); background: rgba(255,210,63,0.1); }
+  .full-btn { width: 100%; padding: 15px; font-size: 1rem; }
+
+  .result-box { margin-top: 16px; min-height: 60px; width: 100%; text-align: center; font-size: 0.92rem; line-height: 1.5; padding: 12px; border-radius: 14px; background: rgba(0,0,0,0.25); border: 1px solid var(--border); color: var(--muted); }
+  .result-box.win { color: var(--mint); border-color: rgba(0,255,179,0.5); box-shadow: 0 0 24px rgba(0,255,179,0.25); background: rgba(0,255,179,0.08); font-weight: 700; }
+  .result-box.lose { color: var(--pink); border-color: rgba(255,79,163,0.5); background: rgba(255,79,163,0.08); font-weight: 700; }
+
+  .reels { display: flex; gap: 12px; margin: 10px 0 20px; }
+  .reel { width: 110px; height: 110px; background: linear-gradient(160deg, #fff, #ffe9b0); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 3.2rem; overflow: hidden; position: relative; border: 3px solid transparent; box-shadow: inset 0 0 16px rgba(0,0,0,0.15), 0 8px 20px rgba(0,0,0,0.3); transition: border-color 0.2s, box-shadow 0.2s; }
+  .reel.win { border-color: var(--gold); box-shadow: 0 0 30px rgba(255,210,63,0.8), inset 0 0 16px rgba(0,0,0,0.15); }
+  .reel .strip { display: flex; flex-direction: column; align-items: center; }
+  .reel .strip span { height: 110px; display: flex; align-items: center; }
+
+  .wheel-wrap { position: relative; width: 260px; height: 260px; margin: 10px 0; }
+  .wheel { width: 100%; height: 100%; border-radius: 50%; position: relative; overflow: hidden; box-shadow: 0 0 40px rgba(255,210,63,0.4), inset 0 0 0 10px #0a0518; transition: transform 4.5s cubic-bezier(0.15,0.85,0.2,1); }
+  .wheel-seg { position: absolute; top: 0; left: 50%; width: 50%; height: 50%; transform-origin: 0% 100%; display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 900; color: #fff; padding-left: 14px; }
+  .wheel-pointer { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); font-size: 1.8rem; z-index: 5; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.8)); }
+  .wheel-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; border-radius: 50%; background: radial-gradient(circle, var(--gold), var(--gold-3)); box-shadow: 0 0 24px rgba(255,210,63,0.9); z-index: 4; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+
+  .odds-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .odd-btn { flex: 1 1 0; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 12px; padding: 10px 6px; color: var(--text); font-weight: 800; font-size: 0.8rem; cursor: pointer; font-family: inherit; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: all 0.15s; min-width: 70px; }
+  .odd-btn:hover { border-color: var(--gold); }
+  .odd-btn.active { background: linear-gradient(135deg, rgba(255,210,63,0.25), rgba(255,79,163,0.2)); border-color: var(--gold); color: var(--gold); box-shadow: var(--glow-gold); }
+  .odd-btn small { font-size: 0.65rem; color: var(--muted); font-weight: 600; }
+  .odd-btn.active small { color: var(--gold); }
+
+  .dice-row { display: flex; gap: 18px; margin-bottom: 18px; }
+  .die { width: 92px; height: 92px; background: linear-gradient(160deg, #fff, #ffe9b0); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 2.6rem; color: #3a2000; box-shadow: 0 8px 0 #a16207, inset 0 0 12px rgba(0,0,0,0.15); transition: transform 0.1s; }
+  .die.rolling { animation: diceShake 0.12s infinite; }
+  @keyframes diceShake { 0% { transform: translateY(-6px) rotate(-10deg); } 50% { transform: translateY(6px) rotate(10deg); } 100% { transform: translateY(-6px) rotate(-10deg); } }
+
+  .coin-face { width: 130px; height: 130px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #fff6b0, var(--gold) 40%, var(--gold-3) 90%); display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: 900; color: #4a2c00; box-shadow: 0 0 40px rgba(255,210,63,0.7), inset 0 -8px 16px rgba(0,0,0,0.3); margin-bottom: 20px; border: 3px solid rgba(255,255,255,0.4); }
+  .coin-face.flipping { animation: flipCoin 0.3s linear infinite; }
+  @keyframes flipCoin { 0% { transform: rotateY(0) scale(1); } 50% { transform: rotateY(90deg) scale(1.08); } 100% { transform: rotateY(180deg) scale(1); } }
+
+  .m3-info { display: flex; gap: 10px; justify-content: center; font-size: 0.82rem; color: var(--muted); margin-bottom: 12px; flex-wrap: wrap; }
+  .m3-info b { color: var(--gold); }
+  .m3-board { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; background: rgba(0,0,0,0.35); padding: 8px; border-radius: 16px; margin: 8px 0 12px; user-select: none; border: 1px solid var(--border); }
+  .m3-cell { aspect-ratio: 1/1; background: linear-gradient(160deg, #fff, #ffe9b0); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; cursor: pointer; transition: transform 0.1s, box-shadow 0.1s, opacity 0.15s; box-shadow: inset 0 0 6px rgba(0,0,0,0.1); }
+  .m3-cell:hover { transform: scale(1.07); }
+  .m3-cell.selected { box-shadow: 0 0 0 3px var(--gold), 0 0 20px rgba(255,210,63,0.9); transform: scale(1.1); }
+  .m3-cell.hint { box-shadow: 0 0 0 3px var(--mint), 0 0 18px rgba(0,255,179,0.8); }
+  .m3-cell.clearing { opacity: 0; transform: scale(0.3); }
+
+  .sport-event { background: linear-gradient(160deg, var(--card-2), var(--card)); border: 1px solid var(--border); border-radius: 16px; padding: 14px 16px; margin-bottom: 10px; backdrop-filter: blur(8px); }
+  .sport-event .teams { font-weight: 800; font-size: 0.9rem; margin-bottom: 10px; }
+  .sport-event .vs { color: var(--gold); margin: 0 8px; font-weight: 600; }
+
+  .fish-stage { position: relative; width: 100%; max-width: 500px; height: 300px; background: linear-gradient(180deg, #0a3a5c 0%, #062030 60%, #020a12 100%); border-radius: 20px; overflow: hidden; margin-bottom: 14px; border: 2px solid var(--border); }
+  .fish-water { position: absolute; inset: 0; }
+  .fish-wave { position: absolute; bottom: 0; width: 200%; height: 60px; background: repeating-linear-gradient(90deg, rgba(34,211,238,0.15) 0 20px, transparent 20px 40px); animation: waveMove 4s linear infinite; }
+  @keyframes waveMove { to { transform: translateX(-50%); } }
+  .fish-line { position: absolute; top: 0; left: 50%; width: 2px; height: 0; background: rgba(255,255,255,0.6); transform: translateX(-50%); transition: height 1.2s cubic-bezier(0.3,0,0.5,1); z-index: 3; }
+  .fish-bobber { position: absolute; top: 0; left: 50%; transform: translateX(-50%); font-size: 1.4rem; transition: top 1.2s cubic-bezier(0.3,0,0.5,1); z-index: 4; }
+  .fish-pig { position: absolute; font-size: 2.2rem; cursor: pointer; transition: transform 0.2s; z-index: 2; filter: drop-shadow(0 0 8px rgba(255,79,163,0.6)); }
+  .fish-pig:hover { transform: scale(1.2); }
+  .fish-pig.caught { animation: caught 0.6s ease-out forwards; }
+  @keyframes caught { to { transform: translate(-50%, -200px) scale(1.5) rotate(360deg); opacity: 0; } }
+  .fish-ripple { position: absolute; border: 2px solid rgba(34,211,238,0.6); border-radius: 50%; width: 10px; height: 10px; animation: ripple 1s ease-out forwards; pointer-events: none; }
+  @keyframes ripple { to { width: 80px; height: 80px; opacity: 0; margin-left: -35px; margin-top: -35px; } }
+  .fish-float-text { position: absolute; font-weight: 900; font-size: 1.2rem; color: var(--mint); pointer-events: none; z-index: 10; animation: fishText 1.2s ease-out forwards; text-shadow: 0 0 12px rgba(0,255,179,0.9); }
+  @keyframes fishText { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-60px); opacity: 0; } }
+
+  .wood-stage { display: flex; gap: 16px; align-items: flex-end; justify-content: center; width: 100%; max-width: 520px; margin-bottom: 14px; min-height: 280px; position: relative; }
+  .wood-truck { position: relative; width: 170px; height: 220px; background: linear-gradient(180deg, #2a3558, #1a2238); border-radius: 16px 16px 8px 8px; border: 2px solid var(--border); padding: 10px; display: flex; flex-direction: column; gap: 6px; overflow: hidden; }
+  .wood-truck::before { content: "🚚"; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%); font-size: 1.6rem; }
+  .wood-log { height: 26px; background: linear-gradient(90deg, #8b5a2b, #a0522d, #6b4423); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; color: #fff; cursor: pointer; transition: transform 0.15s, opacity 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.4); border: 1px solid rgba(0,0,0,0.3); position: relative; }
+  .wood-log::before { content: "🪵"; margin-right: 4px; }
+  .wood-log:hover { transform: scale(1.05); background: linear-gradient(90deg, #a0522d, #c46a3a); }
+  .wood-log.taken { opacity: 0; transform: scale(0.3); pointer-events: none; }
+  .wood-shed { position: relative; width: 170px; height: 220px; background: linear-gradient(180deg, #3a2a1a, #1a0f08); border-radius: 12px; border: 2px solid var(--border); display: flex; flex-wrap: wrap; align-content: flex-start; gap: 3px; padding: 8px; overflow: hidden; }
+  .wood-shed::before { content: "🏚️"; position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 1.4rem; }
+  .wood-shed-log { height: 22px; width: 46%; background: linear-gradient(90deg, #8b5a2b, #6b4423); border-radius: 4px; animation: logIn 0.4s ease-out; }
+  @keyframes logIn { from { transform: translateY(-200px) rotate(45deg); opacity: 0; } to { transform: translateY(0) rotate(0); opacity: 1; } }
+  .wood-count { font-size: 0.8rem; color: var(--gold); font-weight: 800; text-align: center; margin-top: 6px; }
+  .solovey-stage { position: relative; width: 100%; max-width: 520px; height: 160px; display: flex; align-items: flex-end; justify-content: center; margin-bottom: 8px; }
+  .solovey-svg { width: 150px; height: 160px; animation: soloveyBob 2s ease-in-out infinite; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); }
+  @keyframes soloveyBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+  .solovey-speech { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: rgba(255,255,255,0.95); color: #1a0b2e; padding: 8px 14px; border-radius: 14px; font-size: 0.78rem; font-weight: 800; white-space: nowrap; opacity: 0; transition: opacity 0.2s; }
+  .solovey-speech.show { opacity: 1; }
+  .solovey-speech::after { content: ""; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: rgba(255,255,255,0.95); }
+
+  .help-card { background: linear-gradient(160deg, rgba(255,79,163,0.15), rgba(123,44,255,0.1)); border: 1px solid rgba(255,79,163,0.4); border-radius: 20px; padding: 24px; text-align: center; margin-bottom: 16px; }
+  .help-card h2 { font-size: 1.3rem; margin-bottom: 10px; color: var(--pink); }
+  .help-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+  .help-phrase { background: rgba(0,0,0,0.3); border-radius: 12px; padding: 12px 16px; margin: 10px 0; font-size: 1rem; font-weight: 700; color: var(--gold); border-left: 4px solid var(--gold); text-align: left; }
+  .help-phrase.alt { border-left-color: var(--mint); color: var(--mint); }
+  .help-phrase.alt2 { border-left-color: var(--pink); color: var(--pink); }
+
+  .modal-bg { position: fixed; inset: 0; background: rgba(5,2,12,0.85); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 200; padding: 16px; }
+  .modal-bg.show { display: flex; animation: fadeIn 0.2s; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal { background: linear-gradient(160deg, var(--bg-2), var(--bg-1)); border: 1px solid rgba(255,210,63,0.4); border-radius: 24px; padding: 28px; max-width: 400px; width: 100%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.7), var(--glow-gold); animation: popIn 0.3s cubic-bezier(0.2,0.9,0.3,1.3); }
+  @keyframes popIn { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .modal h2 { font-size: 1.2rem; margin-bottom: 14px; }
+  .modal p { font-size: 0.88rem; color: var(--muted); margin-bottom: 16px; line-height: 1.5; }
+  .modal .big-amount { font-size: 2.4rem; font-weight: 900; margin: 12px 0 18px; background: linear-gradient(90deg, var(--gold), var(--pink), var(--mint)); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shine 3s linear infinite; }
+
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); background: linear-gradient(135deg, var(--card-2), var(--card)); border: 1px solid var(--gold); color: var(--text); padding: 13px 24px; border-radius: 100px; font-size: 0.88rem; font-weight: 700; z-index: 300; opacity: 0; transition: all 0.35s cubic-bezier(0.2,0.9,0.3,1.3); pointer-events: none; box-shadow: var(--glow-gold); backdrop-filter: blur(20px); max-width: 90vw; text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .foot { text-align: center; color: var(--muted); font-size: 0.72rem; padding: 30px 0 20px; line-height: 1.6; }
+  .foot b { color: var(--gold); }
+
+  .life-reels { display: flex; gap: 10px; margin: 10px 0 16px; flex-wrap: wrap; justify-content: center; }
+  .life-reel { width: 120px; height: 130px; background: linear-gradient(160deg, #fff, #ffe9b0); border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; position: relative; border: 3px solid transparent; box-shadow: inset 0 0 16px rgba(0,0,0,0.15), 0 8px 20px rgba(0,0,0,0.3); transition: border-color 0.2s, box-shadow 0.2s; color: #3a2000; }
+  .life-reel.win { border-color: var(--gold); box-shadow: 0 0 30px rgba(255,210,63,0.8); }
+  .life-reel .emoji { font-size: 2.4rem; line-height: 1; }
+  .life-reel .label { font-size: 0.58rem; font-weight: 800; text-align: center; padding: 0 4px; margin-top: 4px; line-height: 1.1; }
+  .life-reel .strip { display: flex; flex-direction: column; align-items: center; }
+  .life-reel .strip .item { height: 130px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+  .life-log { margin-top: 14px; text-align: left; font-size: 0.82rem; color: var(--muted); max-height: 200px; overflow-y: auto; width: 100%; }
+  .life-log div { padding: 6px 10px; border-radius: 8px; margin-bottom: 4px; background: rgba(255,255,255,0.04); }
+  .life-log div.done { color: var(--mint); background: rgba(0,255,179,0.08); border-left: 3px solid var(--mint); }
+  .life-log div.miss { color: var(--pink); background: rgba(255,79,163,0.08); border-left: 3px solid var(--pink); }
+
+  .life-catalog { margin-top: 14px; width: 100%; text-align: left; }
+  .life-catalog h4 { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .life-catalog .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .life-catalog .chip { font-size: 0.68rem; padding: 5px 9px; border-radius: 100px; background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: var(--text); font-weight: 700; }
+  .life-catalog .chip.cat1 { border-color: rgba(0,255,179,0.4); }
+  .life-catalog .chip.cat2 { border-color: rgba(255,79,163,0.4); }
+  .life-catalog .chip.cat3 { border-color: rgba(255,210,63,0.4); }
+  .life-catalog .chip.cat4 { border-color: rgba(123,44,255,0.4); }
+
+  .tree-stage { position: relative; width: 100%; max-width: 460px; height: 400px; background: linear-gradient(180deg, #1a2a4a 0%, #0f1a2e 60%, #070d18 100%); border-radius: 20px; overflow: hidden; margin: 10px 0 14px; border: 2px solid var(--border); }
+  .tree-svg { width: 100%; height: 100%; }
+  .tree-health-bar { position: absolute; top: 12px; left: 12px; right: 12px; height: 14px; background: rgba(0,0,0,0.5); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); z-index: 5; }
+  .tree-health-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #4ade80, #facc15); transition: width 0.8s ease, background 0.8s; border-radius: 8px; }
+  .tree-health-label { position: absolute; top: 30px; left: 0; right: 0; text-align: center; font-size: 0.72rem; font-weight: 800; color: #fff; z-index: 5; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+  .tree-leaf { transition: all 0.8s ease; transform-origin: center; }
+  .tree-branch { transition: all 0.8s ease; transform-origin: center; }
+  .tree-trunk { transition: all 0.8s ease; }
+  .falling-leaf { position: absolute; font-size: 1.2rem; pointer-events: none; animation: leafFall 2.5s ease-in forwards; z-index: 4; }
+  @keyframes leafFall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(300px) rotate(720deg); opacity: 0; } }
+  .tree-motivation { background: linear-gradient(160deg, rgba(0,255,179,0.1), rgba(255,210,63,0.08)); border: 1px solid rgba(0,255,179,0.35); border-radius: 16px; padding: 14px 16px; font-size: 0.85rem; line-height: 1.6; color: var(--text); text-align: center; margin-bottom: 14px; }
+  .tree-motivation b { color: var(--gold); }
+  .tree-motivation .quote { font-size: 1rem; font-weight: 800; color: var(--mint); margin-top: 8px; display: block; }
+  .tree-actions { display: flex; flex-direction: column; gap: 8px; }
+
+  .battle-stage {
+    position: relative; width: 100%; max-width: 560px; min-height: 320px;
+    background: linear-gradient(180deg, #1a0a2e 0%, #0d0526 60%, #05020f 100%);
+    border-radius: 20px; overflow: hidden; margin-bottom: 14px;
+    border: 2px solid var(--border);
+    display: flex; align-items: flex-end; justify-content: space-between;
+    padding: 18px; gap: 10px;
+  }
+  .battle-floor {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 70px;
+    background: linear-gradient(180deg, #2a1a3a, #1a0a2e);
+    border-top: 2px solid rgba(255,210,63,0.3);
+  }
+  .battle-floor::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 30px, rgba(255,210,63,0.08) 30px 32px); }
+  .fighter { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; transition: transform 0.15s; }
+  .fighter.egor { width: 140px; }
+  .fighter.enemy { width: 140px; }
+  .fighter svg { width: 100%; height: auto; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6)); }
+  .fighter .fighter-name { font-size: 0.72rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; color: var(--gold); text-align: center; }
+  .fighter.enemy .fighter-name { color: var(--pink); }
+  .fighter .hp-bar { width: 100%; height: 10px; background: rgba(0,0,0,0.5); border-radius: 6px; overflow: hidden; border: 1px solid var(--border); margin-top: 4px; }
+  .fighter .hp-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #4ade80, #facc15); transition: width 0.3s ease; border-radius: 6px; }
+  .fighter.enemy .hp-fill { background: linear-gradient(90deg, #f87171, #ef4444); }
+  .fighter .hp-text { font-size: 0.65rem; color: var(--muted); margin-top: 2px; font-weight: 700; }
+  .fighter.egor .egor-svg { animation: egorIdle 2s ease-in-out infinite; }
+  @keyframes egorIdle { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+  .fighter.enemy .enemy-svg { animation: enemyIdle 1.5s ease-in-out infinite; }
+  @keyframes enemyIdle { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-6px) rotate(2deg); } }
+  .fighter.egor.hit { animation: egorHit 0.3s; }
+  @keyframes egorHit { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+  .fighter.enemy.hit { animation: enemyHit 0.3s; }
+  @keyframes enemyHit { 0%,100% { transform: translateX(0); } 25% { transform: translateX(10px); } 75% { transform: translateX(-10px); } }
+  .fighter.enemy.dying { animation: enemyDie 0.6s forwards; }
+  @keyframes enemyDie { to { transform: translateY(40px) rotate(90deg); opacity: 0; } }
+  .battle-vs { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 1.6rem; font-weight: 900; color: var(--gold); text-shadow: 0 0 20px rgba(255,210,63,0.8); z-index: 3; animation: vsPulse 1.5s ease-in-out infinite; pointer-events: none; }
+  @keyframes vsPulse { 0%,100% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.15); } }
+  .damage-pop { position: absolute; font-weight: 900; font-size: 1.4rem; color: #fff; text-shadow: 0 0 12px rgba(255,0,0,0.9); pointer-events: none; z-index: 10; animation: dmgPop 0.9s ease-out forwards; }
+  @keyframes dmgPop { 0% { transform: translateY(0) scale(0.5); opacity: 1; } 100% { transform: translateY(-60px) scale(1.3); opacity: 0; } }
+  .damage-pop.heal { color: var(--mint); text-shadow: 0 0 12px rgba(0,255,179,0.9); }
+  .battle-log { margin-top: 10px; width: 100%; font-size: 0.78rem; color: var(--muted); max-height: 120px; overflow-y: auto; text-align: left; }
+  .battle-log div { padding: 4px 8px; border-radius: 6px; margin-bottom: 2px; background: rgba(255,255,255,0.04); }
+  .battle-log div.win { color: var(--mint); border-left: 2px solid var(--mint); }
+  .battle-log div.lose { color: var(--pink); border-left: 2px solid var(--pink); }
+  .battle-log div.danger { color: #ff5252; border-left: 2px solid #ff5252; font-weight: 700; }
+  .battle-stats { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; justify-content: center; font-size: 0.78rem; }
+  .battle-stats .stat { background: rgba(0,0,0,0.35); border: 1px solid var(--border); border-radius: 10px; padding: 6px 12px; font-weight: 700; }
+  .battle-stats .stat b { color: var(--gold); }
+  .enemy-picker { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+  .enemy-btn { flex: 1 1 0; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 12px; padding: 8px 6px; color: var(--text); font-weight: 800; font-size: 0.72rem; cursor: pointer; font-family: inherit; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: all 0.15s; min-width: 70px; }
+  .enemy-btn:hover { border-color: var(--gold); }
+  .enemy-btn.active { background: linear-gradient(135deg, rgba(255,79,163,0.25), rgba(123,44,255,0.2)); border-color: var(--pink); color: var(--pink); }
+  .enemy-btn small { font-size: 0.6rem; color: var(--muted); font-weight: 600; }
+  .enemy-btn.active small { color: var(--pink); }
+  .enemy-btn .enemy-emoji { font-size: 1.4rem; }
+
+  /* ===== ДАВИ ПРЫЩИ ===== */
+  .pimple-stage {
+    position: relative; width: 100%; max-width: 480px; min-height: 440px;
+    background: linear-gradient(160deg, #ffd9b3, #e8a87c);
+    border-radius: 24px; overflow: hidden; margin-bottom: 14px;
+    border: 3px solid var(--border);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .face-container {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .egor-face {
+    position: relative;
+    width: 85%; height: 85%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 30%, #ffd9b3, #e8a87c 70%, #c08858);
+    box-shadow: inset -20px -20px 60px rgba(0,0,0,0.2), inset 20px 20px 40px rgba(255,255,255,0.3);
+    overflow: hidden;
+  }
+  .egor-photo {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    z-index: 1;
+  }
+  .egor-face-placeholder {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    z-index: 1; color: #5a2a10; font-weight: 800; text-align: center; padding: 20px;
+  }
+  .egor-face-placeholder .big-emoji { font-size: 5rem; margin-bottom: 8px; }
+  .egor-face-placeholder .hint { font-size: 0.8rem; opacity: 0.7; }
+  /* глаза и нос на лице (декор) */
+  .face-decor { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+  .face-eye { position: absolute; width: 40px; height: 24px; background: #1a0b2e; border-radius: 50%; top: 32%; }
+  .face-eye.left { left: 22%; }
+  .face-eye.right { right: 22%; }
+  .face-eye::after { content: ""; position: absolute; top: 25%; left: 30%; width: 30%; height: 50%; background: #fff; border-radius: 50%; }
+  .face-nose { position: absolute; top: 48%; left: 50%; transform: translateX(-50%); width: 30px; height: 40px; background: linear-gradient(180deg, #e8a87c, #c08858); border-radius: 40% 40% 50% 50%; box-shadow: inset -3px -3px 6px rgba(0,0,0,0.3); }
+  .face-mouth { position: absolute; top: 68%; left: 50%; transform: translateX(-50%); width: 80px; height: 30px; border-bottom: 4px solid #8a3a1a; border-radius: 0 0 50% 50%; }
+  .pimple {
+    position: absolute; z-index: 5;
+    border-radius: 50%;
+    cursor: pointer;
+    background: radial-gradient(circle at 35% 35%, #ff9a9a, #e53935 50%, #b71c1c 100%);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4), inset -2px -2px 6px rgba(0,0,0,0.3);
+    animation: pimplePulse 1.5s ease-in-out infinite;
+    transition: transform 0.1s;
+  }
+  .pimple:hover { transform: scale(1.15); }
+  .pimple::after {
+    content: ""; position: absolute; top: 20%; left: 20%;
+    width: 30%; height: 30%; background: rgba(255,255,255,0.6); border-radius: 50%;
+  }
+  @keyframes pimplePulse { 0%,100% { box-shadow: 0 4px 10px rgba(0,0,0,0.4), 0 0 0 rgba(229,57,53,0); } 50% { box-shadow: 0 4px 10px rgba(0,0,0,0.4), 0 0 20px rgba(229,57,53,0.8); } }
+  .pimple.fat { animation: pimpleFatPulse 1s ease-in-out infinite; }
+  @keyframes pimpleFatPulse { 0%,100% { box-shadow: 0 6px 14px rgba(0,0,0,0.5), 0 0 0 rgba(255,210,63,0); } 50% { box-shadow: 0 6px 14px rgba(0,0,0,0.5), 0 0 30px rgba(255,210,63,1); } }
+  .pimple.bursting { animation: pimpleBurst 0.4s forwards; pointer-events: none; }
+  @keyframes pimpleBurst { to { transform: scale(2); opacity: 0; } }
+  .splat {
+    position: absolute; z-index: 4; width: 30px; height: 30px;
+    pointer-events: none;
+    animation: splatOut 0.6s ease-out forwards;
+    font-size: 1.4rem;
+  }
+  @keyframes splatOut { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
+  .pimple-float {
+    position: absolute; z-index: 10; font-weight: 900; font-size: 1.2rem;
+    color: var(--gold); text-shadow: 0 0 12px rgba(255,210,63,0.9);
+    pointer-events: none; animation: pimpleFloat 1s ease-out forwards;
+  }
+  @keyframes pimpleFloat { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-60px); opacity: 0; } }
+  .pimple-stats {
+    display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; justify-content: center;
+    font-size: 0.78rem;
+  }
+  .pimple-stats .stat {
+    background: rgba(0,0,0,0.35); border: 1px solid var(--border);
+    border-radius: 10px; padding: 6px 12px; font-weight: 700;
+  }
+  .pimple-stats .stat b { color: var(--gold); }
+  .pimple-legend {
+    font-size: 0.74rem; color: var(--muted); line-height: 1.6; margin-top: 10px;
+  }
+  .pimple-legend .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+
+  @media (max-width: 860px) {
+    .sidebar { position: fixed; left: 0; top: 0; height: 100vh; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.2,0.9,0.3,1.3); z-index: 100; width: 250px; box-shadow: 20px 0 60px rgba(0,0,0,0.6); }
+    .sidebar.open { transform: translateX(0); }
+    .mobile-menu-btn { display: block; }
+    .sidebar-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99; backdrop-filter: blur(4px); }
+    .sidebar-backdrop.show { display: block; }
+    .reel { width: 88px; height: 88px; font-size: 2.5rem; }
+    .pig-hero-stage { width: 80vw; height: 80vw; }
+    .container { padding: 16px; }
+    .topbar { padding: 10px 14px; }
+    .life-reel { width: 90px; height: 110px; }
+    .life-reel .emoji { font-size: 2rem; }
+    .fighter { width: 100px; }
+    .fighter .fighter-name { font-size: 0.62rem; }
+    .pimple-stage { min-height: 340px; }
+  }
+  @media (max-width: 500px) {
+    .party-cta { flex-direction: column; width: 100%; max-width: 300px; }
+    .party-cta .btn { width: 100%; }
+    .topbar .actions { gap: 6px; }
+    .balance-chip { font-size: 0.82rem; padding: 8px 14px; }
+    .balance-chip .val { font-size: 0.95rem; }
+    .wood-truck, .wood-shed { width: 140px; height: 200px; }
+    .life-reel { width: 80px; height: 100px; }
+    .life-reel .emoji { font-size: 1.8rem; }
+    .fighter { width: 85px; }
+    .battle-vs { font-size: 1.2rem; }
+    .pimple-stage { min-height: 300px; }
+    .face-eye { width: 30px; height: 18px; }
+  }
+  .mobile-menu-btn { display: none; background: var(--card); border: 1px solid var(--border); color: var(--text); border-radius: 10px; padding: 9px 12px; font-size: 1.1rem; cursor: pointer; font-family: inherit; }
+</style>
+</head>
+<body>
+
+<div class="bg-decor"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+<div class="coin-rain" id="coinRain"></div>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="logo">
+      <div class="logo-coin" id="logoCoin">
+        <!-- СЮДА МОЖНО ВСТАВИТЬ ФОТО: <img src="egor.jpg" alt="Егор"> -->
+        🐷
+      </div>
+      <div class="logo-text">ЕГОРСОЛОВЕЙ<br>БЕТ</div>
+    </div>
+    <button class="nav-item active" data-page="home"><span class="icon">🏠</span> Главная</button>
+    <div class="nav-divider"></div>
+    <div class="nav-label">Игры</div>
+    <button class="nav-item" data-page="slots"><span class="icon">🎰</span> Слоты</button>
+    <button class="nav-item" data-page="egorlife"><span class="icon">🎰</span> EGOR LIFE</button>
+    <button class="nav-item" data-page="pimples"><span class="icon">🔴</span> Дави прыщи</button>
+    <button class="nav-item" data-page="roulette"><span class="icon">🎡</span> Рулетка</button>
+    <button class="nav-item" data-page="coin"><span class="icon">🪙</span> Монетка</button>
+    <button class="nav-item" data-page="dice"><span class="icon">🎲</span> Кости</button>
+    <button class="nav-item" data-page="match3"><span class="icon">🧩</span> 3 в ряд</button>
+    <button class="nav-item" data-page="sport"><span class="icon">⚽</span> Спорт</button>
+    <button class="nav-item" data-page="fishing"><span class="icon">🎣</span> Рыбалка</button>
+    <button class="nav-item" data-page="wood"><span class="icon">🪵</span> Дрова</button>
+    <button class="nav-item" data-page="battle"><span class="icon">⚔️</span> Битва в спортзале</button>
+    <div class="nav-divider"></div>
+    <div class="nav-label">Мотивация</div>
+    <button class="nav-item" data-page="tree"><span class="icon">🌳</span> Дерево Егора</button>
+    <button class="nav-item" data-page="help"><span class="icon">🆘</span> Служба помощи</button>
+    <div class="nav-divider"></div>
+    <button class="nav-item" data-page="bonuses"><span class="icon">🎁</span> Бонусы свина</button>
+  </aside>
+
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        <div class="page-title" id="pageTitle">Главная</div>
+      </div>
+      <div class="actions">
+        <div class="balance-chip" id="balanceChip">💰 <span class="val" id="balance">1 000 ₽</span></div>
+        <button class="btn btn-gold" id="depositBtn">Пополнить</button>
+        <button class="btn btn-ghost" id="withdrawBtn">Вывести</button>
+      </div>
+    </header>
+
+    <!-- ГЛАВНАЯ -->
+    <div class="page active" id="page-home">
+      <section class="hero-party">
+        <div class="party-lights"><div class="beam b1"></div><div class="beam b2"></div><div class="beam b3"></div></div>
+        <div class="disco-ball d1">🪩</div><div class="disco-ball d2">🪩</div>
+        <div class="disco-ball d3">✨</div><div class="disco-ball d4">🎉</div>
+        <div class="flying-money m1">💰</div><div class="flying-money m2">💵</div>
+        <div class="flying-money m3">🪙</div><div class="flying-money m4">💎</div>
+        <div class="flying-money m5">💸</div><div class="flying-money m6">🤑</div>
+        <div class="party-title">ЕГОРСОЛОВЕЙБЕТ</div>
+        <div class="party-sub">Свин в золотых цепях устроил <b>вечеринку</b>. Деньги летят во все стороны!</div>
+        <div class="pig-hero-stage" id="pigHero">
+          <svg class="pig-svg-big" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="pigSkin" cx="35%" cy="30%"><stop offset="0%" stop-color="#ffc9e0"/><stop offset="60%" stop-color="#ff8fc4"/><stop offset="100%" stop-color="#d65c94"/></radialGradient>
+              <linearGradient id="chainGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fff6b0"/><stop offset="50%" stop-color="#ffd23f"/><stop offset="100%" stop-color="#b8860b"/></linearGradient>
+              <radialGradient id="coinG" cx="30%" cy="30%"><stop offset="0%" stop-color="#fff6b0"/><stop offset="60%" stop-color="#ffd23f"/><stop offset="100%" stop-color="#ff8a00"/></radialGradient>
+              <linearGradient id="glassG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1a1a2e"/><stop offset="100%" stop-color="#0a0518"/></linearGradient>
+            </defs>
+            <ellipse cx="110" cy="205" rx="70" ry="9" fill="rgba(0,0,0,0.4)"/>
+            <path d="M 62 75 Q 42 30 76 58 Z" fill="url(#pigSkin)" stroke="#b34a7d" stroke-width="2.5"/>
+            <path d="M 158 75 Q 178 30 144 58 Z" fill="url(#pigSkin)" stroke="#b34a7d" stroke-width="2.5"/>
+            <ellipse cx="110" cy="118" rx="70" ry="64" fill="url(#pigSkin)" stroke="#b34a7d" stroke-width="3"/>
+            <ellipse class="blush" cx="78" cy="132" rx="14" ry="9" fill="#ff4f9e" opacity="0.65"/>
+            <ellipse class="blush" cx="142" cy="132" rx="14" ry="9" fill="#ff4f9e" opacity="0.65" style="animation-delay:-0.7s"/>
+            <circle cx="88" cy="104" r="10" fill="#fff"/><circle cx="132" cy="104" r="10" fill="#fff"/>
+            <circle cx="90" cy="106" r="5.5" fill="#1a0b2e"/><circle cx="134" cy="106" r="5.5" fill="#1a0b2e"/>
+            <circle cx="92" cy="104" r="2" fill="#fff"/><circle cx="136" cy="104" r="2" fill="#fff"/>
+            <g class="sunglasses">
+              <rect x="70" y="92" width="34" height="24" rx="8" fill="url(#glassG)" stroke="url(#chainGold)" stroke-width="2.5"/>
+              <rect x="116" y="92" width="34" height="24" rx="8" fill="url(#glassG)" stroke="url(#chainGold)" stroke-width="2.5"/>
+              <path d="M 104 104 L 116 104" stroke="url(#chainGold)" stroke-width="2.5"/>
+              <path d="M 70 96 L 62 88" stroke="url(#chainGold)" stroke-width="2.5"/>
+              <path d="M 150 96 L 158 88" stroke="url(#chainGold)" stroke-width="2.5"/>
+              <path d="M 74 96 Q 80 100 86 96" stroke="#fff" stroke-width="1.5" fill="none" opacity="0.6"/>
+              <path d="M 120 96 Q 126 100 132 96" stroke="#fff" stroke-width="1.5" fill="none" opacity="0.6"/>
+            </g>
+            <ellipse cx="110" cy="140" rx="27" ry="20" fill="#ff7fb8" stroke="#b34a7d" stroke-width="2.5"/>
+            <ellipse cx="100" cy="140" rx="4.5" ry="7" fill="#c23d72"/><ellipse cx="120" cy="140" rx="4.5" ry="7" fill="#c23d72"/>
+            <path d="M 96 156 Q 110 164 124 156" stroke="#b34a7d" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <g class="chain">
+              <path d="M 66 168 Q 110 202 154 168" stroke="url(#chainGold)" stroke-width="8" fill="none" stroke-linecap="round"/>
+              <g fill="none" stroke="url(#chainGold)" stroke-width="3.5">
+                <ellipse cx="80" cy="180" rx="6" ry="8" transform="rotate(-15 80 180)"/>
+                <ellipse cx="95" cy="188" rx="6" ry="8" transform="rotate(-8 95 188)"/>
+                <ellipse cx="110" cy="191" rx="6" ry="8"/>
+                <ellipse cx="125" cy="188" rx="6" ry="8" transform="rotate(8 125 188)"/>
+                <ellipse cx="140" cy="180" rx="6" ry="8" transform="rotate(15 140 180)"/>
+              </g>
+              <circle cx="110" cy="197" r="13" fill="url(#coinG)" stroke="#8b5a00" stroke-width="2"/>
+              <text x="110" y="203" text-anchor="middle" font-size="15" font-weight="900" fill="#5a3200" font-family="Arial">$</text>
+            </g>
+            <g class="money-float"><rect x="20" y="160" width="34" height="22" rx="4" fill="#4ade80" stroke="#166534" stroke-width="2"/><text x="37" y="176" text-anchor="middle" font-size="13" font-weight="900" fill="#fff" font-family="Arial">$</text></g>
+            <g class="money-float"><rect x="166" y="160" width="34" height="22" rx="4" fill="#4ade80" stroke="#166534" stroke-width="2"/><text x="183" y="176" text-anchor="middle" font-size="13" font-weight="900" fill="#fff" font-family="Arial">$</text></g>
+            <g class="money-float"><rect x="166" y="90" width="32" height="20" rx="4" fill="#4ade80" stroke="#166534" stroke-width="2"/><text x="182" y="105" text-anchor="middle" font-size="12" font-weight="900" fill="#fff" font-family="Arial">$</text></g>
+            <circle cx="40" cy="120" r="9" fill="url(#coinG)" stroke="#8b5a00" stroke-width="1.5"/><text x="40" y="124" text-anchor="middle" font-size="10" font-weight="900" fill="#5a3200" font-family="Arial">$</text>
+            <circle cx="176" cy="130" r="8" fill="url(#coinG)" stroke="#8b5a00" stroke-width="1.5"/><text x="176" y="133" text-anchor="middle" font-size="9" font-weight="900" fill="#5a3200" font-family="Arial">$</text>
+            <ellipse cx="82" cy="82" rx="16" ry="9" fill="rgba(255,255,255,0.4)" transform="rotate(-20 82 82)"/>
+          </svg>
+        </div>
+        <div class="click-hint" id="clickHint">👆 Кликни по свину — он кинет деньги!</div>
+        <div class="party-cta">
+          <button class="btn btn-gold" id="heroPlay">🎰 Играть</button>
+          <button class="btn btn-pink" id="heroDeposit">💰 Пополнить</button>
+          <button class="btn btn-mint" id="heroHelp">🆘 Помощь Егору</button>
+        </div>
+        <div class="foot" style="margin-top:20px;padding:0;"><b>ЕГОРСОЛОВЕЙБЕТ</b> — шутка-игра. Деньги ненастоящие.<br>Свин в золотых цепях веселится, но играй ответственно.</div>
+      </section>
+    </div>
+
+    <!-- СЛОТЫ -->
+    <div class="page" id="page-slots">
+      <div class="container">
+        <button class="back-link" onclick="goTo('home')">← Ни шагу вперёд, только назад</button>
+        <div class="play-layout">
+          <div class="stage">
+            <div class="reels">
+              <div class="reel" id="reel1"><div class="strip"><span>📱</span></div></div>
+              <div class="reel" id="reel2"><div class="strip"><span>👖</span></div></div>
+              <div class="reel" id="reel3"><div class="strip"><span>🍑</span></div></div>
+            </div>
+            <div class="result-box" id="slotsResult">Сделай ставку и жми «Крутить» 🎰</div>
+          </div>
+          <div class="panel">
+            <h3>Ставка</h3>
+            <div class="bet-input-wrap"><span class="cur">₽</span><input type="number" id="slotsBet" value="50" min="1" max="100000"></div>
+            <div class="bet-quick">
+              <button data-bet="10">10</button><button data-bet="50">50</button><button data-bet="100">100</button><button data-bet="500">500</button>
+              <button data-bet="1000">1000</button><button data-bet="5000">5000</button><button data-bet="10000">10000</button><button data-bet="50000">50000</button>
+            </div>
+            <button class="btn btn-gold full-btn" id="slotsSpin">🎰 Крутить</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EGOR LIFE -->
+    <div class="page" id="page-egorlife">
+      <div class="container">
+        <button class="back-link" onclick="goTo('home')">← Ни шагу вперёд, только назад</button>
+        <div class="play-layout">
+          <div class="stage">
+            <div class="section-title" style="font-size:0.95rem;margin-bottom:6px">🎰 EGOR LIFE — что Егор должен сделать сегодня</div>
+            <div class="life-reels" id="lifeReels">
+              <div class="life-reel" id="lifeReel1"><div class="strip"><div class="item"><div class="emoji">🦷</div><div class="label">Почистить зубы</div></div></div></div>
+              <div class="life-reel" id="lifeReel2"><div class="strip"><div class="item"><div class="emoji">☕</div><div class="label">Кофе Лизе</div></div></div></div>
+              <div class="life-reel" id="lifeReel3"><div class="strip"><div class="item"><div class="emoji">💊</div><div class="label">Антидеп</div></div></div></div>
+            </div>
+            <div class="result-box" id="lifeResult">Крути барабаны — выпадет дело Егора на сегодня 🎰</div>
+            <div class="life-log" id="lifeLog"></div>
+            <div class="life-catalog">
+              <h4>Все дела Егора</h4>
+              <div class="chips" id="lifeCatalogChips"></div>
+            </div>
+          </div>
+          <div class="panel">
+            <h3>Ставка</h3>
+            <div class="bet-input-wrap"><span class="cur">₽</span><input type="number" id="lifeBet" value="50" min="1" max="100000"></div>
+            <div class="bet-quick">
+              <button data-bet="10">10</button><button data-bet="50">50</button><button data-bet="100">100</button><button data-bet="500">500</button>
+              <button data-bet="1000">1000</button><button data-bet="5000">5000</button><button data-bet="10000">10000</button><button data-bet="50000">50000</button>
+            </div>
+            <button class="btn btn-gold full-btn" id="lifeSpin">🎰 Крутить дела</button>
+            <div style="font-size:0.74rem;color:var(--muted);margin-top:10px;line-height:1.5">
+              3 одинаковых дела — Егор выполнил, награда ×5.<br>
+              2 одинаковых — частично, ×2.<br>
+              Все разные — день не задался.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ДАВИ ПРЫЩИ -->
+    <div class="page" id="page-pimples">
+      <div class="container">
+        <button class="back-link" onclick="goTo('home')">← Ни шагу вперёд, только назад</button>
+        <div class="play-layout">
+          <div class="stage" style="justify-content:flex-start;padding-top:14px">
+            <div class="section-title" style="font-size:0.9rem;margin-bottom:6px">🔴 Дави прыщи — самый жирный прыщ даёт больше денег</div>
+            <div class="pimple-stats">
+              <div class="stat">⭐ Очки: <b id="pimpleScore">0</b></div>
+              <div class="stat">💥 Лопнуто: <b id="pimpleBurst">0</b></div>
+              <div class="stat">💰 Заработано: <b id="pimpleEarned">0 ₽</b></div>
+            </div>
+            <div class="pimple-stage" id="pimpleStage">
+              <div class="face-container">
+                <div class="egor-face" id="egorFace">
+                  <!-- ФОТО ЕГОРА: положите egor.jpg рядом с html и раскомментируйте строку ниже -->
+                  <!-- <img class="egor-photo" id="egorPhotoImg" src="egor.jpg" alt="Егор"> -->
+                  <div class="egor-face-placeholder" id="egorPlaceholder">
+                    <div class="big-emoji">🧑</div>
+                    <div class="hint">Фото Егора<br>(положите egor.jpg рядом с html)</div>
+                  </div>
+                  <div class="face-decor">
+                    <div class="face-eye left"></div>
+                    <div class="face-eye right"></div>
+                    <div class="face-nose"></div>
+                    <div class="face-mouth"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="result-box" id="pimpleResult">Кликай по прыщам на лице Егора! Жирные — дают больше денег.</div>
+          </div>
+          <div class="panel">
+            <h3>Ставка за прыщ</h3>
+            <div class="bet-input-wrap"><span class="cur">₽</span><input type="number" id="pimpleBet" value="20" min="1" max="100000"></div>
+            <div class="bet-quick">
+              <button data-bet="10">10</button><button data-bet="20">20</button><button data-bet="50">50</button><button data-bet="100">100</button>
+              <button data-bet="500">500</button><button data-bet="1000">1000</button><button data-bet="5000">5000</button><button data-bet="10000">10000</button>
+            </div>
+            <button class="btn btn-gold full-btn" id="pimpleNewFace">🔴 Новое лицо</button>
+            <div class="pimple-legend">
+              <div><span class="dot" style="background:#e53935"></span> Обычный прыщ — ×1 к ставке</div>
+              <div><span class="dot" style="background:#ff8a00"></span> Жирный прыщ — ×3 к ставке</div>
+              <div><span class="dot" style="background:#ffd23f;box-shadow:0 0 10px #ffd23f"></span> Мега-жирный — ×5 к ставке</div>
+              <div style="margin-top:8px;color:var(--gold)">Чем больше прыщ — тем больше денег. Лопай все!</div>
+            </div>
+            <div class="result-box" id="pimpleLog" style="margin-top:10px;font-size:0.8rem;min-height:40px;text-align:left"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- РУЛЕТКА -->
+    <div class="page" id="page-roulette">
+      <div class="container">
+        <button class="back-link" onclick="goTo('home')">← Ни шагу вперёд, только назад</button>
+        <div class="play-layout">
+          <div class="stage">
+            <div class="wheel-wrap"><div class="wheel-pointer">▼</div><div class="wheel" id="rouletteWheel"></div><div class="wheel-center">🎯</div></div>
+            <div class="result-box" id="rouletteResult">Выбери цвет и жми «Крутить» 🎡</div>
+          </div>
+          <div class="panel">
+            <h3>Ставка</h3>
+            <div class="bet-input-wrap"><span class="cur">₽</span><input type="number" id="rouletteBet" value="50" min="1" max="100000"></div>
+            <div class="bet-quick">
+              <button data-bet="10">10</button><button data-bet="50">50</button><button data-bet="100">100</button><button data-bet="500">500</button>
+              <button data-bet="1000">1000</button><button data-bet="5000">5000</button><button data-bet="10000">10000</button><button data-bet="50000">50000</button>
+            </div>
+            <h3 style="margin-top:16px">Выбор</h3>
+            <div class="odds-row" style="margin-bottom:12px">
+              <button class="odd-btn" data-rl="red">🔴<small>Красное x2</small></button>
+              <button class="odd-btn" data-rl="black">⚫<small>Чёрное x2</small></button>
+              <button class="odd-btn" data-rl="green">🟢<small>Зеро x36</small></button>
+            </div>
+            <button class="btn btn-gold full-btn" id="rouletteSpin">🎡 Крутить</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- МОНЕТКА -->
+    <div class="page" id="page-coin">
+      <div class="container">
+        <button class="back-link" onclick="goTo('home')">← Ни шагу вперёд, только назад</button>
+        <div class="play-layout">
+          <div class="stage">
+            <div class="coin-face" id="coinFace">🪙</div>
+            <div class="odds-row" style="width:100%;max-width:320px;margin-bottom:14px">
+              <button class="odd-btn" data-coin="heads">🦅<small>Орёл x2</small></button>
+              <button class="odd-btn" data-coin="tails">🌰<small>Решка x0</small></button>
+            </div>
+            <div class="result-box" id="coinResult">Выбери сторону 🪙</div>
+          </div>
+          <div class="panel">
+            <h3>Ставка</h3>
+            <div class="bet-input-wrap"><span class="cur">₽</span><input type="number" id="coinBet" value="50" min="1" max="100000"></div>
+            <div class="bet-quick">
+              <button data-bet="10">10</button><button data-bet="50">50</button><button data-bet="100">100</button><button data-bet="500">500</button>
+              <button data-bet="1000">1000</button><button data-bet="5000">5000</button><button data-bet="10000">10000</button><button data-bet="50000">50000</button>
+            </div>
+            <button class="btn btn-gold full-btn" id="coinSpin">🪙 Подбросить</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- КОСТИ -->
+    <div class="page" id="page-dice">
+      <div class="container">
+        <button class="back-link" onclick="goTo('home')">← Ни шагу вперёд, только назад</button>
+        <div class="play-layout">
+          <div class="stage">
+            <div class="dice-row"><div class="die" id="die1">⚀</div><div class="die" id="die2">⚀</div></div>
+            <div class="odds-row" style="width:100%;max-width:400px;margin-bottom:14px">
+              <button class="odd-btn" data-dice="low">Меньше 7<small>x2</small></button>
+              <button class="odd-btn" data-dice="seven">Ровно 7<small>x5</small></button>
+              <button class="odd-btn" data-dice="high">Больше 7<small>x2</small></button>
+            </div>
+            <div class="result-box" id="diceResult">Выбери исход 🎲</div>
+          </div>
+          <div class="panel">
+            <h3>Ставка</h3>
+            <div class="bet-input-wrap"><span class="cur">₽</span><input type="number" id="diceBet" value="50" min="1" max="100000"></div>
+            <div class="bet-quick">
+              <button data-bet="10">10</button><button data-bet="50">50</button><button data-bet="100">100</button><button data-bet="500">500</button>
+              <button data-bet="1000">1000</button><button data-bet="5000">5000</button><button data-bet="10000">10000</button><button data-bet="50000">50000</button>
+            </div>
+            <button class="btn btn-gold full-btn" id="diceSpin">🎲 Бросить</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 В РЯД -->
+    <div class="page" id="page-match3">
+      <div class="container">
+        <button class="back-link" onclick="goTo('home')">← Ни шагу вперёд, только назад</button>
+        <div class="play-layout">
+          <div class="stage" style="justify-content:flex-start;padding-top:18px">
+            <div class="m3-info">
+              <span>⭐ Очки: <b id="m3Score">0</b></span>
+              <span>🔄 Ходы: <b id="m3Moves">0</b>/25</span>
+              <span>💵 Ставка: <b id="m3Stake">50 ₽</b></span>
+            </div>
+            <div class="m3-board" id="m3Board"></div>
+            <div class="result-box" id="m3Result">Нажми «Играть», чтобы начать 🧩</div>
+          </div>
+          <div class="panel">
+            <h3>Ставка</h3>
+            <div class="bet-input-wrap"><span class="cur">₽</span><input type="number" id="m3Bet" value="50" min="1" max="100000"></div>
+            <div class="bet-quick">
+              <button data-bet="10">10</button><button data-bet="50">50</button><button data-bet="100">100</button><button data-bet="500">500</button>
+              <button data-bet="1000">1000</button><button data-bet="5000">5000</button><button data-bet="10000">10000</button><button data-bet="50000">50000</button>
+            </div>
+            <button class="btn btn-gold full-btn" id="m3Start">🧩 Играть</button>
+            <div style="display:flex;gap:8px;margin-top:10px">
+              <button class="btn btn-ghost" id="m3Hint" style="flex:1">💡 Подсказка</button>
+              <button class="btn btn-ghost" id="m3Shuffle" style="flex:1">🔀</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- СПОРТ -->
+    <div class="page" id="page-sport">
+      <div class="container">
+        <button class="back-link" onclick="goTo('home')">← Ни шагу вперёд, только назад</button>
+        <div class="play-layout">
+          <div>
+            <div class="section-title" style="font-size:0.95rem">⚽ События</div>
+            <div id="sportList"></div>
+          </div>
+          <div class="panel">
+            <h3>Купон</h3>
+            <div style="font-size:0.85rem;color:var(--muted);margin-bottom:14px;min-height:2.4em" id="sportSlip">Выбери исход слева</div>
+            <h3>Ставка</h3>
+            <div class="bet-input-wrap"><span class="cur">₽</span><input type="number" id="sportBet" value="100" min="1" max="100000"></div>
+            <div class="bet-quick">
+              <button data-bet="50">50</button><button data-bet="100">100</button><button data-bet="500">500</button><button data-bet="1000">1000</button>
+            </div>
+            <button class="btn btn-mint full-btn" id="sportPlace">✅ Поставить</button>
+            <div class="result-box" id="sportResult" style="margin-top:14px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- РЫБАЛКА -->
+    <div class="page" id="page-fishing">
+      <div class="container">
+        <button class="back-link" onclick="goTo('home')">← Ни шагу вперёд, только назад</button>
+        <div class="play-layout">
+          <div class="stage" style="justify-content:flex-start;padding-top:14px">
+            <div class="section-title" style="font-size:0.9rem;margin-bottom:8px">🎣 Рыбалка на свинок</div>
+            <div class="fish-stage" id="fishStage">
+              <div class="fish-water"><div class="fish-wave"></div><div class="fish-wave" style="bottom:20px;animation-delay:-2s;opacity:0.5"></div></div>
+              <div class="fish-line" id="fishLine"></div>
+              <div class="fish-bobber" id="fishBobber">🎣</div>
+            </div>
+            <div class="result-box" id="fishResult">Забрось удочку и жди поклёвки! Свинки плавают в пруду 🐷</div>
+          </div>
+          <div class="panel">
+            <h3>Ставка</h3>
+            <div class="bet-input-wrap"><span class="cur">₽</span><input type="number" id="fishBet" value="50" min="1" max="100000"></div>
+            <div class="bet-quick">
+              <button data-bet="10">10</button><button data-bet="50">50</button><button data-bet="100">100</button><button data-bet="500">500</button>
+              <button data-bet="1000">1000</button><button data-bet="5000">5000</button><button data-bet="10000">10000</button><button data-bet="50000">50000</button>
+            </div>
+            <button class="btn btn-mint full-btn" id="fishCast">🎣 Забросить удочку</button>
+            <div class="result-box" id="fishCatch" style="margin-top:10px;font-size:0.85rem">Свинки: 🐷×2 · 🐖×3 · 🐽×5 · 🐗×10</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ДРОВА -->
+    <div class="page" id="page-wood">
+      <div class="container">
+        <button class="back-link" onclick="goTo('home')">← Ни шагу вперёд, только назад</button>
+        <div class="play-layout">
+          <div class="stage" style="justify-content:flex-start;padding-top:14px">
+            <div class="section-title" style="font-size:0.9rem;margin-bottom:6px">🪵 Соловей в золотых обвесах носит дрова</div>
+            <div class="solovey-stage">
+              <div class="solovey-speech" id="soloveySpeech">Эй, Егор! Помогай дрова таскать!</div>
+              <svg class="solovey-svg" viewBox="0 0 150 160" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="goldChain2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fff6b0"/><stop offset="50%" stop-color="#ffd23f"/><stop offset="100%" stop-color="#b8860b"/></linearGradient>
+                  <radialGradient id="soloveySkin" cx="35%" cy="30%"><stop offset="0%" stop-color="#d4c4a8"/><stop offset="70%" stop-color="#a89070"/><stop offset="100%" stop-color="#7a6248"/></radialGradient>
+                  <radialGradient id="coinG2" cx="30%" cy="30%"><stop offset="0%" stop-color="#fff6b0"/><stop offset="60%" stop-color="#ffd23f"/><stop offset="100%" stop-color="#ff8a00"/></radialGradient>
+                </defs>
+                <ellipse cx="75" cy="155" rx="45" ry="6" fill="rgba(0,0,0,0.4)"/>
+                <ellipse cx="75" cy="105" rx="38" ry="42" fill="url(#soloveySkin)" stroke="#5a4a30" stroke-width="2"/>
+                <circle cx="75" cy="60" r="30" fill="url(#soloveySkin)" stroke="#5a4a30" stroke-width="2"/>
+                <path d="M 60 35 Q 75 15 90 35" fill="url(#soloveySkin)" stroke="#5a4a30" stroke-width="2"/>
+                <circle cx="64" cy="55" r="6" fill="#fff"/><circle cx="86" cy="55" r="6" fill="#fff"/>
+                <circle cx="66" cy="56" r="3" fill="#1a0b2e"/><circle cx="88" cy="56" r="3" fill="#1a0b2e"/>
+                <path d="M 70 70 L 75 82 L 80 70 Z" fill="#ff8a00" stroke="#b45309" stroke-width="1.5"/>
+                <circle cx="64" cy="55" r="10" fill="none" stroke="url(#goldChain2)" stroke-width="3"/>
+                <circle cx="86" cy="55" r="10" fill="none" stroke="url(#goldChain2)" stroke-width="3"/>
+                <path d="M 74 55 L 76 55" stroke="url(#goldChain2)" stroke-width="3"/>
+                <path d="M 54 55 L 48 50" stroke="url(#goldChain2)" stroke-width="3"/>
+                <path d="M 96 55 L 102 50" stroke="url(#goldChain2)" stroke-width="3"/>
+                <path d="M 45 105 Q 75 135 105 105" stroke="url(#goldChain2)" stroke-width="6" fill="none" stroke-linecap="round"/>
+                <g fill="none" stroke="url(#goldChain2)" stroke-width="2.5">
+                  <ellipse cx="55" cy="115" rx="4" ry="6" transform="rotate(-15 55 115)"/>
+                  <ellipse cx="65" cy="123" rx="4" ry="6" transform="rotate(-8 65 123)"/>
+                  <ellipse cx="75" cy="126" rx="4" ry="6"/>
+                  <ellipse cx="85" cy="123" rx="4" ry="6" transform="rotate(8 85 123)"/>
+                  <ellipse cx="95" cy="115" rx="4" ry="6" transform="rotate(15 95 115)"/>
+                </g>
+                <circle cx="75" cy="133" r="10" fill="url(#coinG2)" stroke="#8b5a00" stroke-width="1.5"/>
+                <text x="75" y="138" text-anchor="middle" font-size="11" font-weight="900" fill="#5a3200" font-family="Arial">$</text>
+                <ellipse cx="40" cy="100" rx="12" ry="20" fill="url(#soloveySkin)" stroke="#5a4a30" stroke-width="2" transform="rotate(20 40 100)"/>
+                <ellipse cx="110" cy="100" rx="12" ry="20" fill="url(#soloveySkin)" stroke="#5a4a30" stroke-width="2" transform="rotate(-20 110 100)"/>
+                <circle cx="45" cy="115" r="4" fill="none" stroke="url(#goldChain2)" stroke-width="3"/>
+                <circle cx="105" cy="115" r="4" fill="none" stroke="url(#goldChain2)" stroke-width="3"/>
+                <path d="M 60 140 L 50 155 L 70 148 L 75 158 L 80 148 L 100 155 L 90 140 Z" fill="url(#soloveySkin)" stroke="#5a4a30" stroke-width="2"/>
+              </svg>
+            </div>
+            <div class="wood-stage">
+              <div><div class="wood-truck" id="woodTruck"></div><div class="wood-count" id="woodTruckCount">Дров в машине: 12</div></div>
+              <div><div class="wood-shed" id="woodShed"></div><div class="wood-count" id="woodShedCount">В дровнике: 0</div></div>
+            </div>
+            <div class="result-box" id="woodResult">Кликай по дровам в машине — Соловей перетащит их в дровник!</div>
+          </div>
+          <div class="panel">
+            <h3>Ставка</h3>
+            <div class="bet-input-wrap"><span class="cur">₽</span><input type="number" id="woodBet" value="50" min="1" max="100000"></div>
+            <div class="bet-quick">
+              <button data-bet="10">10</button><button data-bet="50">50</button><button data-bet="100">100</button><button data-bet="500">500</button>
+              <button data-bet="1000">1000</button><button data-bet="5000">5000</button><button data-bet="10000">10000</button><button data-bet="50000">50000</button>
+            </div>
+            <button class="btn btn-gold full-btn" id="woodStart">🪵 Начать таскать дрова</button>
+            <div class="result-box" id="woodReward" style="margin-top:10px;font-size:0.85rem">За каждое бревно: +ставка/12. Собери все 12 — бонус!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- БИТВА В СПОРТЗАЛЕ -->
+    <div class="page" id="page-battle">
+      <div class="container">
+        <button class="back-link" onclick="goTo('home')">← Ни шагу вперёд, только назад</button>
+        <div class="play-layout">
+          <div class="stage" style="justify-content:flex-start;padding-top:14px">
+            <div class="section-title" style="font-size:0.9rem;margin-bottom:6px">⚔️ Битва в спортзале</div>
+            <div class="battle-stats">
+              <div class="stat">🏆 Побед: <b id="battleWins">0</b></div>
+              <div class="stat">⚔️ Битв: <b id="battleTotal">0</b></div>
+              <div class="stat">📚 Курсач: <b id="battleKursach" style="color:var(--pink)">не побеждён</b></div>
+            </div>
+            <div class="battle-stage" id="battleStage">
+              <div class="battle-floor"></div>
+              <div class="battle-vs" id="battleVs">VS</div>
+              <div class="fighter egor" id="fighterEgor">
+                <div class="fighter-name">Егор Соловей</div>
+                <svg class="egor-svg" viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="egorGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fff6b0"/><stop offset="50%" stop-color="#ffd23f"/><stop offset="100%" stop-color="#b8860b"/></linearGradient>
+                    <radialGradient id="egorSkin" cx="35%" cy="30%"><stop offset="0%" stop-color="#ffd9b3"/><stop offset="70%" stop-color="#e8a87c"/><stop offset="100%" stop-color="#b07850"/></radialGradient>
+                    <radialGradient id="egorCoin" cx="30%" cy="30%"><stop offset="0%" stop-color="#fff6b0"/><stop offset="60%" stop-color="#ffd23f"/><stop offset="100%" stop-color="#ff8a00"/></radialGradient>
+                  </defs>
+                  <ellipse cx="60" cy="152" rx="35" ry="5" fill="rgba(0,0,0,0.5)"/>
+                  <path d="M 35 90 Q 30 130 40 150 L 80 150 Q 90 130 85 90 Z" fill="#1a1a2e" stroke="#ffd23f" stroke-width="2"/>
+                  <path d="M 35 95 Q 15 110 20 130" stroke="url(#egorSkin)" stroke-width="10" fill="none" stroke-linecap="round"/>
+                  <path d="M 85 95 Q 105 110 100 130" stroke="url(#egorSkin)" stroke-width="10" fill="none" stroke-linecap="round"/>
+                  <circle cx="20" cy="132" r="7" fill="#e8a87c" stroke="#b07850" stroke-width="1.5"/>
+                  <circle cx="100" cy="132" r="7" fill="#e8a87c" stroke="#b07850" stroke-width="1.5"/>
+                  <circle cx="60" cy="55" r="28" fill="url(#egorSkin)" stroke="#b07850" stroke-width="2"/>
+                  <path d="M 32 50 Q 30 25 60 22 Q 90 25 88 50 Q 80 38 60 36 Q 40 38 32 50 Z" fill="#3a2510"/>
+                  <circle cx="50" cy="52" r="5" fill="#fff"/><circle cx="70" cy="52" r="5" fill="#fff"/>
+                  <circle cx="51" cy="53" r="2.5" fill="#1a0b2e"/><circle cx="71" cy="53" r="2.5" fill="#1a0b2e"/>
+                  <circle cx="50" cy="52" r="8" fill="none" stroke="url(#egorGold)" stroke-width="2.5"/>
+                  <circle cx="70" cy="52" r="8" fill="none" stroke="url(#egorGold)" stroke-width="2.5"/>
+                  <path d="M 58 52 L 62 52" stroke="url(#egorGold)" stroke-width="2.5"/>
+                  <path d="M 50 65 Q 60 72 70 65" stroke="#b07850" stroke-width="2" fill="none" stroke-linecap="round"/>
+                  <path d="M 40 80 Q 60 100 80 80" stroke="url(#egorGold)" stroke-width="4" fill="none" stroke-linecap="round"/>
+                  <circle cx="60" cy="95" r="7" fill="url(#egorCoin)" stroke="#8b5a00" stroke-width="1.5"/>
+                  <text x="60" y="99" text-anchor="middle" font-size="9" font-weight="900" fill="#5a3200" font-family="Arial">$</text>
+                  <text x="60" y="120" text-anchor="middle" font-size="9" font-weight="900" fill="#ffd23f" font-family="Arial">СОЛОВЕЙ</text>
+                </svg>
+                <div class="hp-bar"><div class="hp-fill" id="egorHpFill" style="width:100%"></div></div>
+                <div class="hp-text" id="egorHpText">HP: 100/100</div>
+              </div>
+
+              <div class="fighter enemy" id="fighterEnemy">
+                <div class="fighter-name" id="enemyName">Слизень</div>
+                <svg class="enemy-svg" id="enemySvg" viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg"></svg>
+                <div class="hp-bar"><div class="hp-fill" id="enemyHpFill" style="width:100%"></div></div>
+                <div class="hp-text" id="enemyHpText">HP: 30/30</div>
+              </div>
+            </div>
+            <div class="result-box" id="battleResult">Выбери врага и жми «Атаковать» ⚔️</div>
+            <div class="battle-log" id="battleLog"></div>
+          </div>
+          <div class="panel">
+            <h3>Выбери врага</h3>
+            <div class="enemy-picker" id="enemyPicker">
+              <button class="enemy-btn active" data-enemy="slime"><span class="enemy-emoji">🟢</span>Слизень<small>×1 · слабый</small></button>
+              <button class="enemy-btn" data-enemy="crow"><span class="enemy-emoji">🦅</span>Ворон<small>×3 · средний</small></button>
+              <button class="enemy-btn" data-enemy="kursach"><span class="enemy-emoji">📚</span>Курсач<small>⚠️ босс · обнуляет</small></button>
+            </div>
+            <h3 style="margin-top:12px">Ставка (за слизня)</h3>
+            <div class="bet-input-wrap"><span class="cur">₽</span><input type="number" id="battleBet" value="50" min="1" max="100000"></div>
+            <div class="bet-quick">
+              <button data-bet="10">10</button><button data-bet="50">50</button><button data-bet="100">100</button><button data-bet="500">500</button>
+              <button data-bet="1000">1000</button><button data-bet="5000">5000</button><button data-bet="10000">10000</button><button data-bet="50000">50000</button>
+            </div>
+            <button class="btn btn-red full-btn" id="battleAttack">⚔️ Атаковать</button>
+            <div style="font-size:0.74rem;color:var(--muted);margin-top:10px;line-height:1.5">
+              🟢 Слизень: даёт ставка ×1 ₽<br>
+              🦅 Ворон: даёт ставка ×3 ₽<br>
+              📚 <b style="color:var(--pink)">Курсач (босс): если убьёшь — баланс обнулится до 0 ₽!</b><br>
+              <span style="color:var(--gold)">Ни шагу вперёд, только назад.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ДЕРЕВО ЕГОРА -->
+    <div class="page" id="page-tree">
+      <div class="container">
+        <button class="back-link" onclick="goTo('home')">← Ни шагу вперёд, только назад</button>
+        <div class="play-layout">
+          <div class="stage" style="justify-content:flex-start;padding-top:14px">
+            <div class="section-title" style="font-size:0.9rem;margin-bottom:8px">🌳 Дерево Егора — это не игра. Это ты</div>
+            <div class="tree-motivation">
+              <b>Дерево — это метафора жизни Егора.</b> Оно не приносит денег и не отнимает их. Оно показывает, что будет, если Егор продолжит играть — и что будет, если остановится. <span class="quote">«Ни шагу вперёд, только назад»</span>
+            </div>
+            <div class="tree-stage" id="treeStage">
+              <div class="tree-health-bar"><div class="tree-health-fill" id="treeHealthFill"></div></div>
+              <div class="tree-health-label" id="treeHealthLabel">Здоровье дерева: 100%</div>
+              <svg class="tree-svg" viewBox="0 0 300 380" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="trunkG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8b5a2b"/><stop offset="100%" stop-color="#5a3a1a"/></linearGradient>
+                  <radialGradient id="leafG" cx="40%" cy="40%"><stop offset="0%" stop-color="#4ade80"/><stop offset="60%" stop-color="#22c55e"/><stop offset="100%" stop-color="#15803d"/></radialGradient>
+                  <radialGradient id="leafG2" cx="40%" cy="40%"><stop offset="0%" stop-color="#86efac"/><stop offset="60%" stop-color="#4ade80"/><stop offset="100%" stop-color="#22c55e"/></radialGradient>
+                  <radialGradient id="leafDry" cx="40%" cy="40%"><stop offset="0%" stop-color="#d4a373"/><stop offset="60%" stop-color="#a16207"/><stop offset="100%" stop-color="#78350f"/></radialGradient>
+                  <radialGradient id="leafDead" cx="40%" cy="40%"><stop offset="0%" stop-color="#78716c"/><stop offset="60%" stop-color="#57534e"/><stop offset="100%" stop-color="#292524"/></radialGradient>
+                </defs>
+                <ellipse cx="150" cy="350" rx="140" ry="30" fill="#3a2a1a"/>
+                <ellipse cx="150" cy="348" rx="120" ry="20" fill="#4a3520"/>
+                <path class="tree-root" d="M 150 330 Q 100 350 70 355" stroke="#5a3a1a" stroke-width="8" fill="none" stroke-linecap="round" opacity="0.8"/>
+                <path class="tree-root" d="M 150 330 Q 200 350 230 355" stroke="#5a3a1a" stroke-width="8" fill="none" stroke-linecap="round" opacity="0.8"/>
+                <path class="tree-trunk" d="M 135 330 Q 130 250 140 180 Q 145 140 150 120 Q 155 140 160 180 Q 170 250 165 330 Z" fill="url(#trunkG)" stroke="#3a2510" stroke-width="2"/>
+                <g class="tree-branch">
+                  <path d="M 145 200 Q 100 170 70 140" stroke="#6b4423" stroke-width="7" fill="none" stroke-linecap="round"/>
+                  <path d="M 155 200 Q 200 170 230 140" stroke="#6b4423" stroke-width="7" fill="none" stroke-linecap="round"/>
+                  <path d="M 148 160 Q 110 130 90 100" stroke="#6b4423" stroke-width="6" fill="none" stroke-linecap="round"/>
+                  <path d="M 152 160 Q 190 130 210 100" stroke="#6b4423" stroke-width="6" fill="none" stroke-linecap="round"/>
+                  <path d="M 150 135 Q 150 100 150 80" stroke="#6b4423" stroke-width="6" fill="none" stroke-linecap="round"/>
+                </g>
+                <g class="tree-leaves">
+                  <ellipse class="tree-leaf leaf" cx="70" cy="140" rx="38" ry="32" fill="url(#leafG)"/>
+                  <ellipse class="tree-leaf leaf" cx="230" cy="140" rx="38" ry="32" fill="url(#leafG)"/>
+                  <ellipse class="tree-leaf leaf" cx="90" cy="100" rx="34" ry="30" fill="url(#leafG2)"/>
+                  <ellipse class="tree-leaf leaf" cx="210" cy="100" rx="34" ry="30" fill="url(#leafG2)"/>
+                  <ellipse class="tree-leaf leaf" cx="150" cy="80" rx="42" ry="34" fill="url(#leafG)"/>
+                  <ellipse class="tree-leaf leaf" cx="150" cy="120" rx="48" ry="38" fill="url(#leafG2)"/>
+                  <ellipse class="tree-leaf leaf" cx="110" cy="120" rx="30" ry="26" fill="url(#leafG)"/>
+                  <ellipse class="tree-leaf leaf" cx="190" cy="120" rx="30" ry="26" fill="url(#leafG)"/>
+                </g>
+              </svg>
+            </div>
+            <div class="result-box" id="treeResult">Нажми кнопку ниже, чтобы увидеть, что будет с Егором.</div>
+          </div>
+          <div class="panel">
+            <h3>Что будет с Егором</h3>
+            <div class="tree-actions">
+              <button class="btn btn-red full-btn" id="treeContinueBtn">😢 Показать, если Егор продолжит играть</button>
+              <button class="btn btn-mint full-btn" id="treeStopBtn">🌱 Показать, если Егор остановится</button>
+            </div>
+            <div style="font-size:0.78rem;color:var(--muted);margin-top:12px;line-height:1.6">
+              <b style="color:#ff5252">Продолжит</b> — дерево вянет: листья желтеют и опадают, ветки опускаются, ствол темнеет.<br><br>
+              <b style="color:var(--mint)">Остановится</b> — дерево оживает: листья зеленеют, ветки поднимаются, ствол светлеет.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- СЛУЖБА ПОМОЩИ -->
+    <div class="page" id="page-help">
+      <div class="container">
+        <button class="back-link" onclick="goTo('home')">← Ни шагу вперёд, только назад</button>
+        <div class="help-card">
+          <h2>🆘 Служба помощи Егору</h2>
+          <p>Если ты чувствуешь, что казино затягивает — позови службу помощи. Голос скажет важное. Ты не один.</p>
+          <button class="btn btn-pink full-btn" id="callHelpBtn" style="margin-bottom:12px">📞 Позвать службу помощи</button>
+          <div id="helpPhrases">
+            <div class="help-phrase">Егор, ты не один. Бросай казино.</div>
+            <div class="help-phrase alt">Остановись. Ни шагу вперёд, только назад.</div>
+            <div class="help-phrase alt2">Деньги — не главное. Ты — главное.</div>
+            <div class="help-phrase">Свин в цепях — это образ. А ты — живой человек.</div>
+          </div>
+          <div class="result-box" id="helpResult" style="margin-top:16px">Нажми кнопку — служба помощи озвучит фразы голосом.</div>
+        </div>
+        <div class="help-card" style="background:linear-gradient(160deg, rgba(0,255,179,0.1), rgba(34,211,238,0.08)); border-color:rgba(0,255,179,0.4)">
+          <h2 style="color:var(--mint)">🧭 Правило Егора</h2>
+          <p>«Ни шагу вперёд, только назад» — если проиграл, не отыгрывайся. Сделай шаг назад: закрой игру, отдохни, вернись к жизни.</p>
+          <button class="btn btn-mint full-btn" onclick="goTo('home')">← Ни шагу вперёд, только назад</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- БОНУСЫ -->
+    <div class="page" id="page-bonuses">
+      <div class="container">
+        <button class="back-link" onclick="goTo('home')">← Ни шагу вперёд, только назад</button>
+        <div class="section-title">🎁 Бонусы свина</div>
+        <div class="games-grid">
+          <div class="game-card" id="bonusDaily"><div class="thumb">🎁</div><div class="name">Ежедневный бонус <span class="play-dot">▶</span></div><div class="badge hot">+500₽</div></div>
+          <div class="game-card" id="bonusWheel"><div class="thumb">🎡</div><div class="name">Колесо бонусов <span class="play-dot">▶</span></div></div>
+          <div class="game-card" id="bonusCashback"><div class="thumb">💎</div><div class="name">Кэшбэк 5% <span class="play-dot">▶</span></div><div class="badge new">NEW</div></div>
+        </div>
+        <div class="result-box" id="bonusResult" style="margin-top:10px">Выбери бонус 🐷</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- МОДАЛКИ -->
+<div class="modal-bg" id="depositModal">
+  <div class="modal">
+    <div style="font-size:2.5rem;margin-bottom:8px">💰</div>
+    <h2>Пополнение</h2>
+    <p>Свин принимает только виртуальные деньги</p>
+    <div class="bet-input-wrap" style="margin-bottom:14px"><span class="cur">₽</span><input type="number" id="depositAmount" value="1000" min="1" style="font-size:1.4rem;text-align:center;padding-left:44px"></div>
+    <div class="bet-quick" style="grid-template-columns:repeat(3,1fr)">
+      <button data-dep="500">500</button><button data-dep="1000">1000</button><button data-dep="5000">5000</button>
+      <button data-dep="10000">10000</button><button data-dep="50000">50000</button><button data-dep="100000">100000</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn btn-ghost" id="depositCancel" style="flex:1">Отмена</button>
+      <button class="btn btn-gold" id="depositConfirm" style="flex:1">Пополнить</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="withdrawModal">
+  <div class="modal">
+    <div style="font-size:2.5rem;margin-bottom:8px">💸</div>
+    <h2>Вывод средств</h2>
+    <p>Минимум 100 ₽. Комиссия 5%.</p>
+    <div class="bet-input-wrap" style="margin-bottom:14px"><span class="cur">₽</span><input type="number" id="withdrawAmount" value="1000" min="100" style="font-size:1.4rem;text-align:center;padding-left:44px"></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-ghost" id="withdrawCancel" style="flex:1">Отмена</button>
+      <button class="btn btn-pink" id="withdrawConfirm" style="flex:1">Вывести</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="resultModal">
+  <div class="modal">
+    <div id="resEmoji" style="font-size:3rem;margin-bottom:10px">🎉</div>
+    <h2 id="resTitle">Результат</h2>
+    <div class="big-amount" id="resAmount">+0 ₽</div>
+    <p id="resText"></p>
+    <button class="btn btn-gold full-btn" id="resClose">Ок</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  /* ============ ОБЩЕЕ ============ */
+  const MAX_STAKE = 100000;
+  let balance = 1000;
+  const balanceEl = document.getElementById("balance");
+  const balanceChip = document.getElementById("balanceChip");
+  const toastEl = document.getElementById("toast");
+  const pageTitle = document.getElementById("pageTitle");
+
+  function fmt(n) { return Math.round(n).toLocaleString("ru-RU"); }
+  function updateBalance(bump) {
+    balanceEl.textContent = fmt(balance) + " ₽";
+    if (bump) { balanceChip.classList.add("bump"); setTimeout(() => balanceChip.classList.remove("bump"), 220); }
+  }
+  function toast(msg) {
+    toastEl.textContent = msg; toastEl.classList.add("show");
+    clearTimeout(toastEl._t); toastEl._t = setTimeout(() => toastEl.classList.remove("show"), 2400);
+  }
+  function canBet(amount) {
+    if (isNaN(amount) || amount < 1) { toast("Ставка должна быть больше 0"); return false; }
+    if (amount > MAX_STAKE) { toast("Максимум — 100 000 ₽"); return false; }
+    if (amount > balance) { toast("Недостаточно средств 💸"); return false; }
+    return true;
+  }
+  function showResult(title, amount, text, win) {
+    document.getElementById("resEmoji").textContent = win ? "🎉" : "😢";
+    document.getElementById("resTitle").textContent = title;
+    const amt = document.getElementById("resAmount");
+    amt.textContent = (amount >= 0 ? "+" : "") + fmt(amount) + " ₽";
+    amt.style.background = win ? "linear-gradient(90deg,#ffd23f,#00ffb3)" : "linear-gradient(90deg,#ff4fa3,#7b2cff)";
+    amt.style.webkitBackgroundClip = "text"; amt.style.backgroundClip = "text"; amt.style.color = "transparent";
+    document.getElementById("resText").textContent = text || "";
+    document.getElementById("resultModal").classList.add("show");
+  }
+  document.getElementById("resClose").addEventListener("click", () => document.getElementById("resultModal").classList.remove("show"));
+
+  /* ============ РАЗНЫЕ ОЗВУЧКИ ============ */
+  // Наборы фраз для разных событий, с разными rate/pitch (характерами)
+  const VOICE = {
+    click: { phrases: ["Деньги летят!", "Егор, лови!", "Ещё монетку!", "Свин щедрый!", "Богатеем!"], rate: 1.1, pitch: 1.3 },
+    winSmall: { phrases: ["Неплохо!", "Плюс деньги!", "Егор, ты в плюсе!", "Так держать!"], rate: 1.0, pitch: 1.2 },
+    winBig: { phrases: ["Джекпот!", "Егор, ты миллионер!", "Огромный куш!", "Вот это да!"], rate: 0.85, pitch: 0.9 },
+    lose: { phrases: ["Эх, не повезло.", "Деньги ушли.", "Не в этот раз.", "Егор, не отыгрывайся!"], rate: 0.9, pitch: 0.8 },
+    kursach: { phrases: ["Егор, ты убил Курсач. Всё обнулилось. Бросай казино!"], rate: 0.8, pitch: 0.7 },
+    slime: { phrases: ["Слизень повержен!", "Плюс деньги за слизня!", "Слизень — изи!"], rate: 1.15, pitch: 1.3 },
+    crow: { phrases: ["Ворон повержен!", "Ворон — это тебе не шутки!", "Плюс тройная ставка!"], rate: 1.05, pitch: 1.1 },
+    pimple: { phrases: ["Прыщ лопнул!", "Жирный прыщ — жирные деньги!", "Минус прыщ, плюс деньги!", "Дави его!"], rate: 1.1, pitch: 1.25 },
+    pimpleFat: { phrases: ["МЕГА-ЖИРНЫЙ ПРЫЩ! Огромные деньги!", "Вот это прыщ! Пять ставок!"], rate: 0.9, pitch: 0.9 },
+    help: { phrases: ["Егор, ты не один. Бросай казино.", "Ни шагу вперёд, только назад.", "Остановись. Деньги не вернут время.", "Ты сильнее, чем азарт.", "Свин в цепях — это образ. А ты живой человек."], rate: 0.9, pitch: 1.05 },
+    bonus: { phrases: ["Бонус от свина!", "Держи бонус!", "Свин расщедрился!"], rate: 1.05, pitch: 1.2 },
+    tree: { phrases: ["Егор, дерево вянет. Бросай казино.", "Егор, дерево ожило. Ты не один.", "Ни шагу вперёд, только назад."], rate: 0.9, pitch: 1.0 }
+  };
+
+  function speakCategory(cat) {
+    const v = VOICE[cat];
+    if (!v) return;
+    const phrase = v.phrases[Math.floor(Math.random() * v.phrases.length)];
+    speak(phrase, v.rate, v.pitch);
+  }
+
+  function speak(text, rate = 0.95, pitch = 1) {
+    if (!("speechSynthesis" in window)) { return; }
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "ru-RU"; u.rate = rate; u.pitch = pitch; u.volume = 1;
+    const voices = window.speechSynthesis.getVoices();
+    const ru = voices.find(v => v.lang && v.lang.startsWith("ru"));
+    if (ru) u.voice = ru;
+    window.speechSynthesis.speak(u);
+  }
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+  }
+
+  /* ============ ФОН ============ */
+  const rainEl = document.getElementById("coinRain");
+  const coinChars = ["💰", "🪙", "💵", "💎", "⭐"];
+  for (let i = 0; i < 20; i++) {
+    const c = document.createElement("div");
+    c.className = "coin-particle";
+    c.textContent = coinChars[Math.floor(Math.random() * coinChars.length)];
+    c.style.left = Math.random() * 100 + "%";
+    c.style.animationDuration = (6 + Math.random() * 8) + "s";
+    c.style.animationDelay = (-Math.random() * 10) + "s";
+    c.style.fontSize = (14 + Math.random() * 14) + "px";
+    rainEl.appendChild(c);
+  }
+
+  /* ============ НАВИГАЦИЯ ============ */
+  const pageTitles = {
+    home: "Главная", slots: "Слоты", egorlife: "EGOR LIFE", pimples: "Дави прыщи",
+    roulette: "Рулетка", coin: "Монетка", dice: "Кости", match3: "3 в ряд", sport: "Спорт",
+    bonuses: "Бонусы свина", fishing: "Рыбалка", wood: "Дрова", battle: "Битва в спортзале",
+    tree: "Дерево Егора", help: "Служба помощи"
+  };
+  const sidebar = document.getElementById("sidebar");
+  const sidebarBackdrop = document.getElementById("sidebarBackdrop");
+
+  function goTo(page) {
+    document.querySelectorAll(".page").forEach(p => p.classList.toggle("active", p.id === "page-" + page));
+    document.querySelectorAll(".nav-item").forEach(n => n.classList.toggle("active", n.dataset.page === page));
+    pageTitle.textContent = pageTitles[page] || "Казино";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    sidebar.classList.remove("open"); sidebarBackdrop.classList.remove("show");
+    if (page === "help") setTimeout(() => speakCategory("help"), 300);
+    if (page === "pimples") setTimeout(() => { if (pimpleState.active && pimpleState.pimples.length === 0) spawnPimples(); }, 200);
+  }
+  document.querySelectorAll(".nav-item").forEach(n => n.addEventListener("click", () => goTo(n.dataset.page)));
+  document.getElementById("mobileMenuBtn").addEventListener("click", () => {
+    sidebar.classList.add("open"); sidebarBackdrop.classList.add("show");
+  });
+  sidebarBackdrop.addEventListener("click", () => {
+    sidebar.classList.remove("open"); sidebarBackdrop.classList.remove("show");
+  });
+
+  /* ============ ГЛАВНАЯ: КЛИК ПО СВИНУ ============ */
+  const pigHero = document.getElementById("pigHero");
+  const clickHint = document.getElementById("clickHint");
+  let burstCount = 0;
+  pigHero.addEventListener("click", (e) => {
+    const bonus = 10 + Math.floor(Math.random() * 40);
+    balance += bonus; updateBalance(true);
+    const rect = pigHero.getBoundingClientRect();
+    const x = e.clientX - rect.left, y = e.clientY - rect.top;
+    const floatText = document.createElement("div");
+    floatText.textContent = "+" + bonus + " ₽";
+    floatText.style.cssText = `position:absolute;left:${x}px;top:${y}px;font-weight:900;font-size:1.2rem;color:#00ffb3;pointer-events:none;z-index:20;text-shadow:0 0 12px rgba(0,255,179,0.9);animation:burstOut 1s ease-out forwards;--dx:0px;--dy:-70px;--rot:0deg;`;
+    pigHero.appendChild(floatText);
+    setTimeout(() => floatText.remove(), 1000);
+    const symbols = ["💰","💵","🪙","💎","💸","🤑","⭐"];
+    for (let i = 0; i < 14; i++) {
+      const s = document.createElement("div");
+      s.className = "money-burst";
+      s.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 120 + Math.random() * 180;
+      s.style.left = x + "px"; s.style.top = y + "px";
+      s.style.setProperty("--dx", Math.cos(angle) * dist + "px");
+      s.style.setProperty("--dy", Math.sin(angle) * dist - 60 + "px");
+      s.style.setProperty("--rot", (Math.random() * 720 - 360) + "deg");
+      s.style.fontSize = (18 + Math.random() * 22) + "px";
+      pigHero.appendChild(s);
+      setTimeout(() => s.remove(), 1200);
+    }
+    burstCount++;
+    if (burstCount === 1) speakCategory("click");
+    if (burstCount === 1) { clickHint.textContent = "🎉 Вечеринка началась! Свин кидает деньги!"; setTimeout(() => { clickHint.textContent = "👆 Кликни ещё — свин щедрый!"; }, 2200); }
+    else if (burstCount === 5) { clickHint.textContent = "🤑 Свин в ударе! Деньги летят!"; speakCategory("winSmall"); }
+    else if (burstCount === 10) { clickHint.textContent = "🎊 Ты разбудил свина-миллионера!"; speakCategory("winBig"); }
+  });
+  clickHint.addEventListener("click", (e) => { e.stopPropagation(); pigHero.click(); });
+  document.getElementById("heroPlay").addEventListener("click", () => goTo("slots"));
+  document.getElementById("heroDeposit").addEventListener("click", () => depositModal.classList.add("show"));
+  document.getElementById("heroHelp").addEventListener("click", () => goTo("help"));
+
+  /* ============ БЫСТРЫЕ СТАВКИ ============ */
+  document.querySelectorAll(".bet-quick").forEach(row => {
+    row.querySelectorAll("button[data-bet]").forEach(b => {
+      b.addEventListener("click", () => {
+        const input = row.parentElement.querySelector("input");
+        if (input) input.value = b.dataset.bet;
+      });
+    });
+  });
+
+  /* ============ ПОПОЛНЕНИЕ / ВЫВОД ============ */
+  const depositModal = document.getElementById("depositModal");
+  const withdrawModal = document.getElementById("withdrawModal");
+  document.getElementById("depositBtn").addEventListener("click", () => depositModal.classList.add("show"));
+  document.getElementById("depositCancel").addEventListener("click", () => depositModal.classList.remove("show"));
+  document.querySelectorAll("#depositModal [data-dep]").forEach(b => {
+    b.addEventListener("click", () => { document.getElementById("depositAmount").value = b.dataset.dep; });
+  });
+  document.getElementById("depositConfirm").addEventListener("click", () => {
+    const val = parseInt(document.getElementById("depositAmount").value, 10);
+    if (isNaN(val) || val <= 0) { toast("Введите корректную сумму"); return; }
+    balance += val; updateBalance(true);
+    depositModal.classList.remove("show");
+    toast(`Баланс пополнен на ${fmt(val)} ₽ 🐷`);
+    speak(`Баланс пополнен на ${fmt(val)} рублей`, 1.05, 1.2);
+  });
+  document.getElementById("withdrawBtn").addEventListener("click", () => withdrawModal.classList.add("show"));
+  document.getElementById("withdrawCancel").addEventListener("click", () => withdrawModal.classList.remove("show"));
+  document.getElementById("withdrawConfirm").addEventListener("click", () => {
+    const val = parseInt(document.getElementById("withdrawAmount").value, 10);
+    if (isNaN(val) || val < 100) { toast("Минимум — 100 ₽"); return; }
+    if (val > balance) { toast("Недостаточно средств"); return; }
+    const fee = Math.round(val * 0.05), net = val - fee;
+    balance -= val; updateBalance(true);
+    withdrawModal.classList.remove("show");
+    toast(`Вывод ${fmt(net)} ₽ обработан (комиссия ${fmt(fee)} ₽)`);
+  });
+
+  /* ============ БОНУСЫ ============ */
+  function bonusResult(msg, win) {
+    const el = document.getElementById("bonusResult");
+    el.className = "result-box " + (win ? "win" : "lose");
+    el.innerHTML = msg;
+  }
+  document.getElementById("bonusDaily").addEventListener("click", () => {
+    balance += 500; updateBalance(true);
+    bonusResult("🎁 Ежедневный бонус: <b>+500 ₽</b>", true);
+    showResult("Ежедневный бонус", 500, "Свин расщедрился!", true);
+    speakCategory("bonus");
+  });
+  document.getElementById("bonusWheel").addEventListener("click", () => {
+    const prizes = [100, 250, 500, 1000, 2500];
+    const prize = prizes[Math.floor(Math.random() * prizes.length)];
+    balance += prize; updateBalance(true);
+    bonusResult(`🎡 Колесо бонусов: <b>+${fmt(prize)} ₽</b>`, true);
+    showResult("Колесо бонусов", prize, "Свин крутанул в твою пользу!", true);
+    speakCategory("bonus");
+  });
+  document.getElementById("bonusCashback").addEventListener("click", () => {
+    const cb = Math.min(5000, Math.round(balance * 0.05));
+    if (cb <= 0) { toast("Пока нечего возвращать"); return; }
+    balance += cb; updateBalance(true);
+    bonusResult(`💎 Кэшбэк 5%: <b>+${fmt(cb)} ₽</b>`, true);
+    showResult("Кэшбэк 5%", cb, "Свин вернул часть потраченного.", true);
+    speakCategory("bonus");
+  });
+
+  /* ============ СЛОТЫ ============ */
+  const SYMS = ["📱","👖","🤡","🍌","🧦","🦆","🍑","🐸","🦄","🍺"];
+  const NAMES = { "📱":"ТикТок","👖":"Штанишки","🤡":"Клоун","🍌":"Банан","🧦":"Носок","🦆":"Утка","🍑":"Жопа","🐸":"Жаба","🦄":"Единорог","🍺":"Пиво" };
+  const TRIPLE = { "📱":25, "👖":20, "🍑":16, "🦄":15, "🍺":14, "🤡":12, "🍌":12, "🧦":12, "🦆":12, "🐸":12 };
+  let slotsBusy = false;
+  const reels = [document.getElementById("reel1"), document.getElementById("reel2"), document.getElementById("reel3")];
+  const slotsResult = document.getElementById("slotsResult");
+
+  function animReel(reel, finalSym, duration) {
+    return new Promise(res => {
+      const strip = reel.querySelector(".strip");
+      let html = "";
+      for (let i = 0; i < 18; i++) html += `<span>${SYMS[Math.floor(Math.random()*SYMS.length)]}</span>`;
+      html += `<span>${finalSym}</span>`;
+      strip.innerHTML = html;
+      const shift = (strip.children.length - 1) * 110;
+      strip.style.transition = "none"; strip.style.transform = "translateY(0)";
+      void strip.offsetHeight;
+      strip.style.transition = `transform ${duration}ms cubic-bezier(0.15,0.85,0.25,1)`;
+      strip.style.transform = `translateY(-${shift}px)`;
+      setTimeout(() => {
+        strip.style.transition = "none"; strip.style.transform = "translateY(0)";
+        strip.innerHTML = `<span>${finalSym}</span>`;
+        res();
+      }, duration + 20);
+    });
+  }
+
+  document.getElementById("slotsSpin").addEventListener("click", async () => {
+    if (slotsBusy) return;
+    const bet = parseInt(document.getElementById("slotsBet").value, 10) || 0;
+    if (!canBet(bet)) return;
+    slotsBusy = true; balance -= bet; updateBalance(true);
+    reels.forEach(r => r.classList.remove("win"));
+    slotsResult.className = "result-box"; slotsResult.textContent = `Ставка ${fmt(bet)} ₽. Барабаны крутятся…`;
+    const finals = [0,1,2].map(() => SYMS[Math.floor(Math.random()*SYMS.length)]);
+    animReel(reels[0], finals[0], 1100); animReel(reels[1], finals[1], 1500);
+    await animReel(reels[2], finals[2], 1900);
+    const [a,b,c] = finals;
+    let mult = 0, text = "";
+    if (a===b && b===c) { mult = TRIPLE[a] || 10; text = `Три ${NAMES[a].toLowerCase()}а!`; }
+    else if (a===b || b===c || a===c) { mult = 2; text = "Пара совпала."; }
+    else text = "Не совпало.";
+    const win = Math.round(mult * bet);
+    balance += win; updateBalance(win > 0);
+    if (win > 0) {
+      reels.forEach(r => r.classList.add("win"));
+      slotsResult.className = "result-box win";
+      slotsResult.innerHTML = `${NAMES[a]} · ${NAMES[b]} · ${NAMES[c]}<br>${text}<br><b>+${fmt(win)} ₽ (x${mult})</b>`;
+      showResult("Победа!", win, text, true);
+      speakCategory(mult >= 10 ? "winBig" : "winSmall");
+    } else {
+      slotsResult.className = "result-box lose";
+      slotsResult.innerHTML = `${NAMES[a]} · ${NAMES[b]} · ${NAMES[c]}<br>${text}<br><b>−${fmt(bet)} ₽</b>`;
+      showResult("Проигрыш", -bet, text, false);
+      speakCategory("lose");
+    }
+    slotsBusy = false;
+  });
+
+  /* ============ EGOR LIFE ============ */
+  const LIFE_ITEMS = [
+    { emoji: "🦷", label: "Почистить зубы", cat: 1 },
+    { emoji: "🚿", label: "Принять душ", cat: 1 },
+    { emoji: "🧴", label: "Побриться", cat: 1 },
+    { emoji: "🛏️", label: "Заправить кровать", cat: 1 },
+    { emoji: "💊", label: "Выпить антидеп", cat: 2 },
+    { emoji: "🏃", label: "Сделать зарядку", cat: 2 },
+    { emoji: "🧘", label: "Медитация 10 мин", cat: 2 },
+    { emoji: "💧", label: "Выпить воды", cat: 2 },
+    { emoji: "🥗", label: "Съесть что-то полезное", cat: 2 },
+    { emoji: "🩺", label: "Записаться к врачу", cat: 2 },
+    { emoji: "☕", label: "Кофе Лизе", cat: 3 },
+    { emoji: "☕", label: "Кофе Вике", cat: 3 },
+    { emoji: "☕", label: "Кофе жене", cat: 3 },
+    { emoji: "📞", label: "Позвонить Кириллу", cat: 3 },
+    { emoji: "📞", label: "Позвонить маме", cat: 3 },
+    { emoji: "🤗", label: "Обнять близких", cat: 3 },
+    { emoji: "🎁", label: "Сделать комплимент", cat: 3 },
+    { emoji: "💼", label: "Сходить на работу", cat: 4 },
+    { emoji: "💻", label: "Сделать задачу", cat: 4 },
+    { emoji: "🧾", label: "Оплатить счета", cat: 4 },
+    { emoji: "🛒", label: "Купить продукты", cat: 4 },
+    { emoji: "🗑️", label: "Вынести мусор", cat: 4 },
+    { emoji: "🍽️", label: "Помыть посуду", cat: 4 },
+    { emoji: "🐕", label: "Выгулять собаку", cat: 4 },
+    { emoji: "🐷", label: "Покормить свина", cat: 4 },
+    { emoji: "📚", label: "Прочитать 10 страниц", cat: 4 },
+    { emoji: "🚫", label: "Не заходить в казино", cat: 5 },
+    { emoji: "✋", label: "Сказать «нет» азарту", cat: 5 },
+    { emoji: "🚶", label: "Прогулка вместо ставки", cat: 5 },
+    { emoji: "😴", label: "Лечь до 23:00", cat: 5 }
+  ];
+  let lifeBusy = false;
+  let lifeLog = [];
+  const lifeReels = [
+    document.getElementById("lifeReel1"),
+    document.getElementById("lifeReel2"),
+    document.getElementById("lifeReel3")
+  ];
+  const lifeResult = document.getElementById("lifeResult");
+  const lifeLogEl = document.getElementById("lifeLog");
+  const lifeCatalogChips = document.getElementById("lifeCatalogChips");
+
+  LIFE_ITEMS.forEach((item, i) => {
+    const chip = document.createElement("span");
+    chip.className = "chip cat" + (i % 4 + 1);
+    chip.textContent = `${item.emoji} ${item.label}`;
+    lifeCatalogChips.appendChild(chip);
+  });
+
+  function makeLifeItemHTML(item) {
+    return `<div class="item"><div class="emoji">${item.emoji}</div><div class="label">${item.label}</div></div>`;
+  }
+  function randLifeItem() { return LIFE_ITEMS[Math.floor(Math.random() * LIFE_ITEMS.length)]; }
+
+  function animLifeReel(reel, finalItem, duration) {
+    return new Promise(res => {
+      const strip = reel.querySelector(".strip");
+      let html = "";
+      for (let i = 0; i < 14; i++) html += makeLifeItemHTML(randLifeItem());
+      html += makeLifeItemHTML(finalItem);
+      strip.innerHTML = html;
+      const shift = (strip.children.length - 1) * 130;
+      strip.style.transition = "none"; strip.style.transform = "translateY(0)";
+      void strip.offsetHeight;
+      strip.style.transition = `transform ${duration}ms cubic-bezier(0.15,0.85,0.25,1)`;
+      strip.style.transform = `translateY(-${shift}px)`;
+      setTimeout(() => {
+        strip.style.transition = "none"; strip.style.transform = "translateY(0)";
+        strip.innerHTML = makeLifeItemHTML(finalItem);
+        res();
+      }, duration + 20);
+    });
+  }
+
+  function renderLifeLog() {
+    if (lifeLog.length === 0) { lifeLogEl.innerHTML = ""; return; }
+    lifeLogEl.innerHTML = lifeLog.map(entry =>
+      `<div class="${entry.done ? 'done' : 'miss'}">${entry.done ? '✅' : '❌'} ${entry.text}</div>`
+    ).join("");
+    lifeLogEl.scrollTop = lifeLogEl.scrollHeight;
+  }
+
+  document.getElementById("lifeSpin").addEventListener("click", async () => {
+    if (lifeBusy) return;
+    const bet = parseInt(document.getElementById("lifeBet").value, 10) || 0;
+    if (!canBet(bet)) return;
+    lifeBusy = true;
+    balance -= bet; updateBalance(true);
+    lifeReels.forEach(r => r.classList.remove("win"));
+    lifeResult.className = "result-box";
+    lifeResult.textContent = `Ставка ${fmt(bet)} ₽. Барабаны крутят дела Егора…`;
+    const finals = [randLifeItem(), randLifeItem(), randLifeItem()];
+    animLifeReel(lifeReels[0], finals[0], 1100);
+    animLifeReel(lifeReels[1], finals[1], 1500);
+    await animLifeReel(lifeReels[2], finals[2], 1900);
+
+    const [a,b,c] = finals;
+    let mult = 0, done = false, text = "";
+    if (a.label === b.label && b.label === c.label) {
+      mult = 5; done = true;
+      text = `Егор выполнил: ${a.label}! Награда ×5`;
+    } else if (a.label === b.label || b.label === c.label || a.label === c.label) {
+      mult = 2; done = true;
+      const doneItem = (a.label === b.label) ? a : (b.label === c.label) ? b : a;
+      text = `Егор частично выполнил: ${doneItem.label}. ×2`;
+    } else {
+      mult = 0; done = false;
+      text = "Все дела разные — день не задался.";
+    }
+    const win = Math.round(mult * bet);
+    balance += win; updateBalance(win > 0);
+
+    lifeLog.push({ done, text: `${a.label} · ${b.label} · ${c.label} → ${text}` });
+    if (lifeLog.length > 10) lifeLog.shift();
+    renderLifeLog();
+
+    if (win > 0) {
+      lifeReels.forEach(r => r.classList.add("win"));
+      lifeResult.className = "result-box win";
+      lifeResult.innerHTML = `${a.emoji} ${a.label} · ${b.emoji} ${b.label} · ${c.emoji} ${c.label}<br>${text}<br><b>+${fmt(win)} ₽ (x${mult})</b>`;
+      showResult("Егор справился!", win, text, true);
+      speak(`Егор, ты ${done ? "молодец" : "не справился"}!`, 1, 1.1);
+    } else {
+      lifeResult.className = "result-box lose";
+      lifeResult.innerHTML = `${a.emoji} ${a.label} · ${b.emoji} ${b.label} · ${c.emoji} ${c.label}<br>${text}<br><b>−${fmt(bet)} ₽</b>`;
+      showResult("День не задался", -bet, text, false);
+    }
+    lifeBusy = false;
+  });
+
+  /* ============ ДАВИ ПРЫЩИ ============ */
+  const pimpleStage = document.getElementById("pimpleStage");
+  const pimpleScoreEl = document.getElementById("pimpleScore");
+  const pimpleBurstEl = document.getElementById("pimpleBurst");
+  const pimpleEarnedEl = document.getElementById("pimpleEarned");
+  const pimpleResult = document.getElementById("pimpleResult");
+  const pimpleLogEl = document.getElementById("pimpleLog");
+  const pimpleNewFaceBtn = document.getElementById("pimpleNewFace");
+
+  const pimpleState = {
+    active: false,
+    score: 0,
+    burst: 0,
+    earned: 0,
+    pimples: [],
+    log: []
+  };
+
+  function addPimpleLog(text, type) {
+    pimpleState.log.push({ text, type });
+    if (pimpleState.log.length > 5) pimpleState.log.shift();
+    pimpleLogEl.innerHTML = pimpleState.log.map(l => `<div style="color:${l.type === 'win' ? 'var(--mint)' : l.type === 'fat' ? 'var(--gold)' : 'var(--pink)'};margin-bottom:3px">${l.text}</div>`).join("");
+    pimpleLogEl.scrollTop = pimpleLogEl.scrollHeight;
+  }
+
+  function clearPimples() {
+    pimpleStage.querySelectorAll(".pimple, .splat, .pimple-float").forEach(el => el.remove());
+    pimpleState.pimples = [];
+  }
+
+  function spawnPimples() {
+    clearPimples();
+    pimpleState.active = true;
+    pimpleState.score = 0;
+    pimpleState.burst = 0;
+    pimpleState.earned = 0;
+    pimpleScoreEl.textContent = "0";
+    pimpleBurstEl.textContent = "0";
+    pimpleEarnedEl.textContent = "0 ₽";
+    pimpleResult.className = "result-box";
+    pimpleResult.textContent = "Кликай по прыщам! Жирные — дороже.";
+    pimpleLogEl.innerHTML = "";
+    pimpleState.log = [];
+
+    const count = 8 + Math.floor(Math.random() * 5);
+    for (let i = 0; i < count; i++) {
+      // жирность: обычный, жирный, мега
+      const r = Math.random();
+      let type, size, mult, color;
+      if (r < 0.6) { type = "normal"; size = 18 + Math.random() * 10; mult = 1; }
+      else if (r < 0.9) { type = "fat"; size = 32 + Math.random() * 12; mult = 3; }
+      else { type = "mega"; size = 44 + Math.random() * 14; mult = 5; }
+
+      const el = document.createElement("div");
+      el.className = "pimple" + (type === "mega" ? " fat" : type === "fat" ? " fat" : "");
+      el.style.width = size + "px";
+      el.style.height = size + "px";
+      // позиция на лице (внутри круга)
+      let top, left;
+      // избегаем центра глаз/носа
+      let tries = 0;
+      do {
+        const angle = Math.random() * Math.PI * 2;
+        const radius = Math.random() * 36; // % от центра
+        top = 50 + Math.sin(angle) * radius;
+        left = 50 + Math.cos(angle) * radius;
+        tries++;
+      } while (tries < 20 && ((top > 28 && top < 40 && (left > 18 && left < 40 || left > 60 && left < 82)) || (top > 44 && top < 58 && left > 42 && left < 58) || (top > 62 && top < 74 && left > 40 && left < 60)));
+      el.style.top = top + "%";
+      el.style.left = left + "%";
+      el.dataset.mult = mult;
+      el.dataset.type = type;
+      el.addEventListener("click", (e) => popPimple(el, mult, type, e));
+      pimpleStage.appendChild(el);
+      pimpleState.pimples.push(el);
+    }
+  }
+
+  function popPimple(el, mult, type, e) {
+    if (!pimpleState.active) return;
+    const bet = parseInt(document.getElementById("pimpleBet").value, 10) || 0;
+    if (bet < 1) { toast("Введи ставку"); return; }
+    if (bet > MAX_STAKE) { toast("Максимум — 100 000 ₽"); return; }
+    el.classList.add("bursting");
+
+    const rect = el.getBoundingClientRect();
+    const stageRect = pimpleStage.getBoundingClientRect();
+    const x = rect.left - stageRect.left + rect.width / 2;
+    const y = rect.top - stageRect.top + rect.height / 2;
+
+    // splat
+    const splat = document.createElement("div");
+    splat.className = "splat";
+    splat.textContent = type === "mega" ? "💥" : type === "fat" ? "💥" : "💦";
+    splat.style.left = (x - 15) + "px";
+    splat.style.top = (y - 15) + "px";
+    pimpleStage.appendChild(splat);
+    setTimeout(() => splat.remove(), 600);
+
+    const win = bet * mult;
+    balance += win; updateBalance(true);
+    pimpleState.score += mult * 10;
+    pimpleState.burst++;
+    pimpleState.earned += win;
+    pimpleScoreEl.textContent = pimpleState.score;
+    pimpleBurstEl.textContent = pimpleState.burst;
+    pimpleEarnedEl.textContent = fmt(pimpleState.earned) + " ₽";
+
+    // floating text
+    const ft = document.createElement("div");
+    ft.className = "pimple-float";
+    ft.textContent = "+" + fmt(win) + " ₽";
+    ft.style.left = (x - 30) + "px";
+    ft.style.top = (y - 30) + "px";
+    pimpleStage.appendChild(ft);
+    setTimeout(() => ft.remove(), 1000);
+
+    const label = type === "mega" ? "МЕГА-жирный" : type === "fat" ? "Жирный" : "Обычный";
+    addPimpleLog(`${label} прыщ лопнул! +${fmt(win)} ₽ (×${mult})`, type === "mega" ? "fat" : "win");
+
+    if (type === "mega") speakCategory("pimpleFat");
+    else if (type === "fat") { speak("Жирный прыщ! Плюс " + fmt(win) + " рублей!", 1.0, 1.0); }
+    else if (Math.random() < 0.5) speakCategory("pimple");
+
+    pimpleResult.className = "result-box win";
+    pimpleResult.innerHTML = `Лопнул <b>${label}</b> прыщ! <b>+${fmt(win)} ₽ (×${mult})</b>`;
+
+    setTimeout(() => el.remove(), 400);
+
+    // проверка: все ли лопнули
+    setTimeout(() => {
+      const left = pimpleState.pimples.filter(p => p.isConnected);
+      if (left.length === 0) {
+        pimpleState.active = false;
+        pimpleResult.className = "result-box win";
+        pimpleResult.innerHTML = `🎉 Все прыщи лопнули! Всего заработано: <b>${fmt(pimpleState.earned)} ₽</b>. Жми «Новое лицо».`;
+        showResult("Все прыщи лопнули!", pimpleState.earned, `Лопнуто: ${pimpleState.burst}`, true);
+        speak("Все прыщи лопнули! Егор доволен!", 1, 1.2);
+      }
+    }, 500);
+  }
+
+  document.getElementById("pimpleNewFace").addEventListener("click", () => {
+    spawnPimples();
+  });
+  // первичный спавн при переходе на вкладку
+  document.querySelectorAll(".nav-item").forEach(n => {
+    if (n.dataset.page === "pimples") {
+      n.addEventListener("click", () => setTimeout(spawnPimples, 100));
+    }
+  });
+
+  /* ============ РУЛЕТКА ============ */
+  const RED = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
+  const ORDER = [0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26];
+  let rlChoice = null, rlBusy = false, rlRot = 0;
+  const wheelEl = document.getElementById("rouletteWheel");
+  const rlResult = document.getElementById("rouletteResult");
+
+  function buildWheel() {
+    wheelEl.innerHTML = "";
+    const n = ORDER.length, ang = 360 / n;
+    ORDER.forEach((num, i) => {
+      const d = document.createElement("div");
+      d.className = "wheel-seg";
+      let col = num === 0 ? "#00c98b" : RED.includes(num) ? "#e53935" : "#1a1a2e";
+      d.style.background = col;
+      d.style.transform = `rotate(${i*ang}deg) skewY(${90-ang}deg)`;
+      d.innerHTML = `<span style="transform:skewY(${-(90-ang)}deg) rotate(${ang/2}deg)">${num}</span>`;
+      wheelEl.appendChild(d);
+    });
+  }
+  buildWheel();
+
+  document.querySelectorAll("[data-rl]").forEach(b => {
+    b.addEventListener("click", () => {
+      document.querySelectorAll("[data-rl]").forEach(x => x.classList.remove("active"));
+      b.classList.add("active"); rlChoice = b.dataset.rl;
+    });
+  });
+  document.getElementById("rouletteSpin").addEventListener("click", () => {
+    if (rlBusy) return;
+    if (!rlChoice) { toast("Выбери цвет"); return; }
+    const bet = parseInt(document.getElementById("rouletteBet").value, 10) || 0;
+    if (!canBet(bet)) return;
+    rlBusy = true; balance -= bet; updateBalance(true);
+    rlResult.className = "result-box"; rlResult.textContent = "Колесо крутится… 🎡";
+    const idx = Math.floor(Math.random() * ORDER.length);
+    const num = ORDER[idx];
+    const n = ORDER.length, segAng = 360 / n;
+    const targetCenter = idx * segAng + segAng / 2;
+    const spins = 5 + Math.floor(Math.random() * 3);
+    rlRot += spins * 360 + (360 - targetCenter) - (rlRot % 360);
+    wheelEl.style.transform = `rotate(${rlRot}deg)`;
+    setTimeout(() => {
+      let win = 0, mult = 0, outText = "";
+      if (num === 0) {
+        outText = "Зеро 🟢";
+        if (rlChoice === "green") { mult = 36; win = mult * bet; }
+      } else if (RED.includes(num)) {
+        outText = `${num} 🔴`;
+        if (rlChoice === "red") { mult = 2; win = mult * bet; }
+      } else {
+        outText = `${num} ⚫`;
+        if (rlChoice === "black") { mult = 2; win = mult * bet; }
+      }
+      balance += win; updateBalance(win > 0);
+      if (win > 0) {
+        rlResult.className = "result-box win";
+        rlResult.innerHTML = `Выпало: <b>${outText}</b><br>Угадал!<br><b>+${fmt(win)} ₽ (x${mult})</b>`;
+        showResult("Победа!", win, outText, true);
+        speakCategory(mult >= 10 ? "winBig" : "winSmall");
+      } else {
+        rlResult.className = "result-box lose";
+        rlResult.innerHTML = `Выпало: <b>${outText}</b><br>Не угадал.<br><b>−${fmt(bet)} ₽</b>`;
+        showResult("Проигрыш", -bet, outText, false);
+        speakCategory("lose");
+      }
+      rlBusy = false;
+    }, 4400);
+  });
+
+  /* ============ МОНЕТКА ============ */
+  let coinChoice = null, coinBusy = false;
+  const coinFace = document.getElementById("coinFace");
+  const coinResult = document.getElementById("coinResult");
+  document.querySelectorAll("[data-coin]").forEach(b => {
+    b.addEventListener("click", () => {
+      document.querySelectorAll("[data-coin]").forEach(x => x.classList.remove("active"));
+      b.classList.add("active"); coinChoice = b.dataset.coin;
+    });
+  });
+  document.getElementById("coinSpin").addEventListener("click", () => {
+    if (coinBusy) return;
+    if (!coinChoice) { toast("Выбери сторону"); return; }
+    const bet = parseInt(document.getElementById("coinBet").value, 10) || 0;
+    if (!canBet(bet)) return;
+    coinBusy = true; balance -= bet; updateBalance(true);
+    coinResult.className = "result-box"; coinResult.textContent = "Монетка крутится… 🪙";
+    coinFace.classList.add("flipping");
+    setTimeout(() => {
+      coinFace.classList.remove("flipping");
+      const roll = Math.random();
+      let outcome;
+      if (roll < 0.05) outcome = "edge";
+      else if (roll < 0.525) outcome = "heads";
+      else outcome = "tails";
+      if (outcome === "heads") coinFace.textContent = "🦅";
+      else if (outcome === "tails") coinFace.textContent = "🌰";
+      else coinFace.textContent = "🧿";
+      let win = 0, mult = 0, text = "";
+      if (outcome === "edge") { mult = 5; win = mult * bet; text = "РЕБРО! ×5!"; }
+      else if (outcome === coinChoice) { mult = 2; win = mult * bet; text = "Угадал! ×2!"; }
+      else text = outcome === "heads" ? "Выпал орёл." : "Выпала решка.";
+      balance += win; updateBalance(win > 0);
+      if (win > 0) {
+        coinResult.className = "result-box win";
+        coinResult.innerHTML = `${text}<br><b>+${fmt(win)} ₽</b>`;
+        showResult("Победа!", win, text, true);
+        speakCategory("winSmall");
+      } else {
+        coinResult.className = "result-box lose";
+        coinResult.innerHTML = `${text}<br><b>−${fmt(bet)} ₽</b>`;
+        showResult("Проигрыш", -bet, text, false);
+        speakCategory("lose");
+      }
+      coinBusy = false;
+    }, 1500);
+  });
+
+  /* ============ КОСТИ ============ */
+  const FACES = ["⚀","⚁","⚂","⚃","⚄","⚅"];
+  let diceChoice = null, diceBusy = false;
+  const die1 = document.getElementById("die1"), die2 = document.getElementById("die2");
+  const diceResult = document.getElementById("diceResult");
+  document.querySelectorAll("[data-dice]").forEach(b => {
+    b.addEventListener("click", () => {
+      document.querySelectorAll("[data-dice]").forEach(x => x.classList.remove("active"));
+      b.classList.add("active"); diceChoice = b.dataset.dice;
+    });
+  });
+  document.getElementById("diceSpin").addEventListener("click", () => {
+    if (diceBusy) return;
+    if (!diceChoice) { toast("Выбери исход"); return; }
+    const bet = parseInt(document.getElementById("diceBet").value, 10) || 0;
+    if (!canBet(bet)) return;
+    diceBusy = true; balance -= bet; updateBalance(true);
+    diceResult.className = "result-box"; diceResult.textContent = "Кости катятся… 🎲";
+    die1.classList.add("rolling"); die2.classList.add("rolling");
+    let t = 0;
+    const iv = setInterval(() => {
+      die1.textContent = FACES[Math.floor(Math.random()*6)];
+      die2.textContent = FACES[Math.floor(Math.random()*6)];
+      t++; if (t > 12) clearInterval(iv);
+    }, 100);
+    setTimeout(() => {
+      clearInterval(iv);
+      die1.classList.remove("rolling"); die2.classList.remove("rolling");
+      const r1 = 1 + Math.floor(Math.random()*6), r2 = 1 + Math.floor(Math.random()*6);
+      const sum = r1 + r2;
+      die1.textContent = FACES[r1-1]; die2.textContent = FACES[r2-1];
+      let win = 0, mult = 0, ok = false;
+      if (diceChoice === "low" && sum < 7) { mult = 2; ok = true; }
+      else if (diceChoice === "seven" && sum === 7) { mult = 5; ok = true; }
+      else if (diceChoice === "high" && sum > 7) { mult = 2; ok = true; }
+      if (ok) win = mult * bet;
+      balance += win; updateBalance(win > 0);
+      if (win > 0) {
+        diceResult.className = "result-box win";
+        diceResult.innerHTML = `${r1} + ${r2} = <b>${sum}</b>. Угадал!<br><b>+${fmt(win)} ₽ (x${mult})</b>`;
+        showResult("Победа!", win, `Сумма ${sum}`, true);
+        speakCategory("winSmall");
+      } else {
+        diceResult.className = "result-box lose";
+        diceResult.innerHTML = `${r1} + ${r2} = <b>${sum}</b>. Не угадал.<br><b>−${fmt(bet)} ₽</b>`;
+        showResult("Проигрыш", -bet, `Сумма ${sum}`, false);
+        speakCategory("lose");
+      }
+      diceBusy = false;
+    }, 1500);
+  });
+
+  /* ============ 3 В РЯД ============ */
+  const M3 = { size: 7, pool: ["📱","👖","🤡","🍌","🧦","🦆","🍑","🐸","🦄","🍺"], board: [], score: 0, moves: 0, maxMoves: 25, playing: false, busy: false, stake: 0, selected: null, hint: [] };
+  const m3Board = document.getElementById("m3Board");
+  const m3ScoreEl = document.getElementById("m3Score");
+  const m3MovesEl = document.getElementById("m3Moves");
+  const m3StakeEl = document.getElementById("m3Stake");
+  const m3Result = document.getElementById("m3Result");
+
+  function randSym() { return M3.pool[Math.floor(Math.random()*M3.pool.length)]; }
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+  function makeBoard() {
+    M3.board = [];
+    for (let r = 0; r < M3.size; r++) { const row = []; for (let c = 0; c < M3.size; c++) row.push(randSym()); M3.board.push(row); }
+    let g = 0;
+    while (findMatches().length > 0 && g < 100) {
+      for (const gr of findMatches()) for (const {r,c} of gr.cells) M3.board[r][c] = randSym();
+      g++;
+    }
+  }
+  function findMatches() {
+    const groups = [];
+    for (let r = 0; r < M3.size; r++) {
+      let run = 1;
+      for (let c = 1; c <= M3.size; c++) {
+        if (c < M3.size && M3.board[r][c] === M3.board[r][c-1]) run++;
+        else { if (run >= 3) { const cells = []; for (let k = c - run; k < c; k++) cells.push({r, c: k}); groups.push({ cells, len: run }); } run = 1; }
+      }
+    }
+    for (let c = 0; c < M3.size; c++) {
+      let run = 1;
+      for (let r = 1; r <= M3.size; r++) {
+        if (r < M3.size && M3.board[r][c] === M3.board[r-1][c]) run++;
+        else { if (run >= 3) { const cells = []; for (let k = r - run; k < r; k++) cells.push({r: k, c}); groups.push({ cells, len: run }); } run = 1; }
+      }
+    }
+    return groups;
+  }
+  function uniqueCells(groups) {
+    const set = new Set();
+    groups.forEach(g => g.cells.forEach(({r,c}) => set.add(r*M3.size + c)));
+    return Array.from(set).map(idx => ({r: Math.floor(idx/M3.size), c: idx % M3.size}));
+  }
+  function renderM3() {
+    m3Board.innerHTML = "";
+    for (let r = 0; r < M3.size; r++) for (let c = 0; c < M3.size; c++) {
+      const d = document.createElement("div");
+      d.className = "m3-cell"; d.textContent = M3.board[r][c];
+      if (M3.selected && M3.selected.r === r && M3.selected.c === c) d.classList.add("selected");
+      if (M3.hint.some(h => h.r === r && h.c === c)) d.classList.add("hint");
+      d.addEventListener("click", () => onCellClick(r, c));
+      m3Board.appendChild(d);
+    }
+    m3ScoreEl.textContent = M3.score; m3MovesEl.textContent = M3.moves; m3StakeEl.textContent = M3.stake + " ₽";
+  }
+  function getCell(r,c) { return m3Board.children[r*M3.size + c]; }
+  async function clearRefill(cells) {
+    for (const {r,c} of cells) { const el = getCell(r,c); if (el) el.classList.add("clearing"); }
+    await sleep(170);
+    const byCol = {};
+    cells.forEach(({r,c}) => { (byCol[c] = byCol[c] || []).push(r); });
+    for (const cStr in byCol) {
+      const c = parseInt(cStr, 10); const rows = byCol[c].sort((a,b)=>a-b);
+      for (let i = rows.length - 1; i >= 0; i--) {
+        const r = rows[i];
+        for (let rr = r; rr > 0; rr--) M3.board[rr][c] = M3.board[rr-1][c];
+        M3.board[0][c] = randSym();
+      }
+    }
+    renderM3(); await sleep(90);
+  }
+  async function resolve() {
+    let total = 0, cascade = 0, g = 0;
+    while (g < 50) {
+      const groups = findMatches();
+      if (groups.length === 0) break;
+      cascade++;
+      const cMult = cascade === 1 ? 1 : cascade === 2 ? 1.5 : cascade === 3 ? 2 : 3;
+      let gained = 0;
+      groups.forEach(gr => { let base = gr.cells.length * 10; if (gr.len === 4) base *= 1.5; if (gr.len >= 5) base *= 2; gained += base; });
+      gained = Math.round(gained * cMult);
+      total += gained; M3.score += gained; m3ScoreEl.textContent = M3.score;
+      await clearRefill(uniqueCells(groups)); g++;
+    }
+    return total;
+  }
+  function adj(a,b) { return Math.abs(a.r-b.r) + Math.abs(a.c-b.c) === 1; }
+  function swap(a,b) { const t = M3.board[a.r][a.c]; M3.board[a.r][a.c] = M3.board[b.r][b.c]; M3.board[b.r][b.c] = t; }
+  async function onCellClick(r, c) {
+    if (!M3.playing || M3.busy) return;
+    M3.hint = [];
+    if (!M3.selected) { M3.selected = {r,c}; renderM3(); return; }
+    if (M3.selected.r === r && M3.selected.c === c) { M3.selected = null; renderM3(); return; }
+    if (!adj(M3.selected, {r,c})) { M3.selected = {r,c}; renderM3(); return; }
+    M3.busy = true;
+    const a = M3.selected, b = {r,c};
+    M3.selected = null; swap(a,b); renderM3();
+    await sleep(130);
+    if (findMatches().length === 0) {
+      swap(a,b); renderM3();
+      m3Result.className = "result-box"; m3Result.textContent = "Нет совпадений — обмен отменён.";
+      M3.busy = false; return;
+    }
+    M3.moves++;
+    const gained = await resolve();
+    m3Result.className = "result-box";
+    m3Result.innerHTML = `Ход ${M3.moves}: +${gained} очков. Всего: <b>${M3.score}</b>`;
+    M3.busy = false;
+    if (M3.moves >= M3.maxMoves) finishM3();
+    else if (!hasMoves()) {
+      m3Result.innerHTML = "Ходов больше нет! Забирай выигрыш.";
+      document.getElementById("m3Start").textContent = "💰 Забрать";
+      document.getElementById("m3Start").disabled = false;
+      M3.playing = false;
+    }
+  }
+  function hasMoves() {
+    for (let r = 0; r < M3.size; r++) for (let c = 0; c < M3.size; c++) {
+      if (c < M3.size - 1) { swap({r,c},{r,c:c+1}); const ok = findMatches().length > 0; swap({r,c},{r,c:c+1}); if (ok) return true; }
+      if (r < M3.size - 1) { swap({r,c},{r:r+1,c}); const ok = findMatches().length > 0; swap({r,c},{r:r+1,c}); if (ok) return true; }
+    }
+    return false;
+  }
+  function findHint() {
+    for (let r = 0; r < M3.size; r++) for (let c = 0; c < M3.size; c++) {
+      if (c < M3.size - 1) { swap({r,c},{r,c:c+1}); const ok = findMatches().length > 0; swap({r,c},{r,c:c+1}); if (ok) return [{r,c},{r,c:c+1}]; }
+      if (r < M3.size - 1) { swap({r,c},{r:r+1,c}); const ok = findMatches().length > 0; swap({r,c},{r:r+1,c}); if (ok) return [{r,c},{r:r+1,c}]; }
+    }
+    return [];
+  }
+  function finishM3() {
+    if (!M3.playing && M3.stake === 0) return;
+    M3.playing = false;
+    const payout = Math.floor(M3.score * M3.stake / 100);
+    balance += payout; updateBalance(payout > 0);
+    m3Result.className = "result-box " + (payout > 0 ? "win" : "lose");
+    m3Result.innerHTML = `Игра окончена! Очки: <b>${M3.score}</b>, ставка: <b>${M3.stake} ₽</b>.<br>Выплата: <b>+${fmt(payout)} ₽</b>`;
+    showResult(payout > 0 ? "Победа!" : "Игра окончена", payout > 0 ? payout : -M3.stake, `Очки: ${M3.score}`, payout > 0);
+    speakCategory(payout > 0 ? "winSmall" : "lose");
+    document.getElementById("m3Start").textContent = "🧩 Играть"; document.getElementById("m3Start").disabled = false;
+    M3.stake = 0;
+  }
+  document.getElementById("m3Start").addEventListener("click", () => {
+    if (M3.playing) { finishM3(); return; }
+    const bet = parseInt(document.getElementById("m3Bet").value, 10) || 0;
+    if (!canBet(bet)) return;
+    balance -= bet; updateBalance(true);
+    M3.stake = bet; M3.score = 0; M3.moves = 0; M3.playing = true; M3.busy = false; M3.selected = null; M3.hint = [];
+    makeBoard(); renderM3();
+    m3Result.className = "result-box";
+    m3Result.innerHTML = `Ставка <b>${fmt(bet)} ₽</b> списана. Собирай 3+ в ряд!`;
+    document.getElementById("m3Start").textContent = "⏳ Игра…"; document.getElementById("m3Start").disabled = true;
+    if (!hasMoves()) { makeBoard(); renderM3(); }
+  });
+  document.getElementById("m3Hint").addEventListener("click", () => {
+    if (!M3.playing || M3.busy) return;
+    const h = findHint();
+    if (h.length === 0) { m3Result.textContent = "Ходов нет — перемешай."; return; }
+    M3.hint = h; renderM3();
+    m3Result.textContent = "Подсказка подсвечена 💡";
+    setTimeout(() => { M3.hint = []; renderM3(); }, 1500);
+  });
+  document.getElementById("m3Shuffle").addEventListener("click", () => {
+    if (!M3.playing || M3.busy) return;
+    if (hasMoves()) { const cost = Math.floor(M3.score * 0.1); M3.score = Math.max(0, M3.score - cost); m3Result.textContent = `Перемешано. −${cost} очков.`; }
+    else m3Result.textContent = "Перемешано бесплатно.";
+    makeBoard(); renderM3();
+    if (!hasMoves()) { makeBoard(); renderM3(); }
+  });
+
+  /* ============ СПОРТ ============ */
+  const EVENTS = [
+    { id:1, teams:["Свин Юнайтед","ФК Штанишки"], odds:[1.85,3.4,4.2], labels:["П1","Х","П2"] },
+    { id:2, teams:["ТикТок Сити","Реал Жопа"], odds:[2.1,3.1,3.5], labels:["П1","Х","П2"] },
+    { id:3, teams:["Клоун Арсенал","Бананчестер"], odds:[1.55,3.8,5.5], labels:["П1","Х","П2"] },
+    { id:4, teams:["Утиные Пруды","Жабий Пруд"], odds:[2.4,3.0,2.9], labels:["П1","Х","П2"] },
+    { id:5, teams:["Пивная Лига","Единорог Юнайтед"], odds:[3.2,3.3,2.05], labels:["П1","Х","П2"] }
+  ];
+  let sportSlip = null;
+  function renderSport() {
+    const list = document.getElementById("sportList");
+    list.innerHTML = "";
+    EVENTS.forEach(ev => {
+      const div = document.createElement("div");
+      div.className = "sport-event";
+      div.innerHTML = `<div class="teams">${ev.teams[0]}<span class="vs">vs</span>${ev.teams[1]}</div><div class="odds-row">${ev.odds.map((o,i) => `<button class="odd-btn" data-ev="${ev.id}" data-out="${i}">${ev.labels[i]}<small>${o.toFixed(2)}</small></button>`).join("")}</div>`;
+      list.appendChild(div);
+    });
+    list.querySelectorAll("[data-ev]").forEach(b => {
+      b.addEventListener("click", () => {
+        list.querySelectorAll("[data-ev]").forEach(x => x.classList.remove("active"));
+        b.classList.add("active");
+        const ev = EVENTS.find(e => e.id === parseInt(b.dataset.ev, 10));
+        const i = parseInt(b.dataset.out, 10);
+        sportSlip = { ev, i, odds: ev.odds[i], label: ev.labels[i] };
+        document.getElementById("sportSlip").innerHTML = `${ev.teams[0]} — ${ev.teams[1]}<br><b style="color:var(--gold)">${ev.labels[i]} @ ${ev.odds[i].toFixed(2)}</b>`;
+      });
+    });
+  }
+  renderSport();
+  document.getElementById("sportPlace").addEventListener("click", () => {
+    if (!sportSlip) { toast("Выбери исход"); return; }
+    const bet = parseInt(document.getElementById("sportBet").value, 10) || 0;
+    if (!canBet(bet)) return;
+    balance -= bet; updateBalance(true);
+    const resEl = document.getElementById("sportResult");
+    resEl.className = "result-box"; resEl.textContent = "Матч идёт… ⚽";
+    const slip = sportSlip; sportSlip = null;
+    document.getElementById("sportSlip").textContent = "Выбери исход слева";
+    document.querySelectorAll("#sportList [data-ev]").forEach(x => x.classList.remove("active"));
+    setTimeout(() => {
+      const win = Math.random() < 0.45;
+      if (win) {
+        const payout = Math.round(bet * slip.odds);
+        balance += payout; updateBalance(true);
+        resEl.className = "result-box win";
+        resEl.innerHTML = `Ставка сыграла!<br><b>+${fmt(payout)} ₽ (x${slip.odds.toFixed(2)})</b>`;
+        showResult("Ставка сыграла!", payout, `${slip.ev.teams[0]} — ${slip.ev.teams[1]}`, true);
+        speakCategory("winSmall");
+      } else {
+        resEl.className = "result-box lose";
+        resEl.innerHTML = `Не сыграла.<br><b>−${fmt(bet)} ₽</b>`;
+        showResult("Не сыграла", -bet, `${slip.ev.teams[0]} — ${slip.ev.teams[1]}`, false);
+        speakCategory("lose");
+      }
+    }, 2000);
+  });
+
+  /* ============ СЛУЖБА ПОМОЩИ ============ */
+  document.getElementById("callHelpBtn").addEventListener("click", () => {
+    speakCategory("help");
+    const res = document.getElementById("helpResult");
+    res.className = "result-box win";
+    res.innerHTML = `🔊 Служба помощи говорит: <b>«${VOICE.help.phrases[0]}»</b>`;
+    const phrases = document.querySelectorAll("#helpPhrases .help-phrase");
+    phrases.forEach(p => p.style.transform = "");
+    const active = phrases[0];
+    if (active) {
+      active.style.transform = "scale(1.04)";
+      active.style.boxShadow = "0 0 24px rgba(255,210,63,0.5)";
+      setTimeout(() => { active.style.transform = ""; active.style.boxShadow = ""; }, 2000);
+    }
+  });
+
+  /* ============ РЫБАЛКА ============ */
+  const FISH_TYPES = [
+    { sym: "🐷", name: "Свинка", mult: 2, weight: 40 },
+    { sym: "🐖", name: "Свинья", mult: 3, weight: 30 },
+    { sym: "🐽", name: "Пятачок", mult: 5, weight: 20 },
+    { sym: "🐗", name: "Кабан", mult: 10, weight: 10 }
+  ];
+  let fishBusy = false;
+  const fishStage = document.getElementById("fishStage");
+  const fishLine = document.getElementById("fishLine");
+  const fishBobber = document.getElementById("fishBobber");
+  const fishResult = document.getElementById("fishResult");
+
+  function pickFish() {
+    const total = FISH_TYPES.reduce((a, b) => a + b.weight, 0);
+    let r = Math.random() * total;
+    for (const f of FISH_TYPES) { r -= f.weight; if (r <= 0) return f; }
+    return FISH_TYPES[0];
+  }
+
+  function spawnFish() {
+    fishStage.querySelectorAll(".fish-pig").forEach(el => el.remove());
+    const count = 5 + Math.floor(Math.random() * 3);
+    for (let i = 0; i < count; i++) {
+      const f = pickFish();
+      const el = document.createElement("div");
+      el.className = "fish-pig";
+      el.textContent = f.sym;
+      el.style.left = (10 + Math.random() * 80) + "%";
+      el.style.top = (30 + Math.random() * 55) + "%";
+      el.style.animation = `flyAround ${4 + Math.random() * 4}s ease-in-out infinite`;
+      el.style.animationDelay = (-Math.random() * 4) + "s";
+      el.dataset.mult = f.mult;
+      el.dataset.name = f.name;
+      el.addEventListener("click", () => catchFish(el, f));
+      fishStage.appendChild(el);
+    }
+  }
+
+  function catchFish(el, f) {
+    if (fishBusy) return;
+    const bet = parseInt(document.getElementById("fishBet").value, 10) || 0;
+    if (!canBet(bet)) return;
+    fishBusy = true;
+    balance -= bet; updateBalance(true);
+    el.classList.add("caught");
+    const rect = el.getBoundingClientRect();
+    const stageRect = fishStage.getBoundingClientRect();
+    const x = rect.left - stageRect.left + rect.width / 2;
+    const y = rect.top - stageRect.top;
+    const txt = document.createElement("div");
+    txt.className = "fish-float-text";
+    txt.textContent = `+${fmt(f.mult * bet)} ₽`;
+    txt.style.left = x + "px"; txt.style.top = y + "px";
+    fishStage.appendChild(txt);
+    setTimeout(() => txt.remove(), 1200);
+    const rip = document.createElement("div");
+    rip.className = "fish-ripple";
+    rip.style.left = x + "px"; rip.style.top = y + "px";
+    fishStage.appendChild(rip);
+    setTimeout(() => rip.remove(), 1000);
+    const win = f.mult * bet;
+    balance += win; updateBalance(true);
+    fishResult.className = "result-box win";
+    fishResult.innerHTML = `Поймал <b>${f.name}</b> ${f.sym}!<br><b>+${fmt(win)} ₽ (x${f.mult})</b>`;
+    speak(`Поймал ${f.name}! Плюс ${fmt(win)} рублей`, 1.1, 1.2);
+    setTimeout(() => {
+      el.remove();
+      if (fishStage.querySelectorAll(".fish-pig").length === 0) spawnFish();
+      fishBusy = false;
+    }, 600);
+  }
+
+  document.getElementById("fishCast").addEventListener("click", () => {
+    const bet = parseInt(document.getElementById("fishBet").value, 10) || 0;
+    if (!canBet(bet)) return;
+    fishResult.className = "result-box";
+    fishResult.textContent = "Заброс… ждём поклёвки! 🎣";
+    fishLine.style.height = "0";
+    fishBobber.style.top = "0";
+    setTimeout(() => {
+      fishLine.style.height = "70%";
+      fishBobber.style.top = "70%";
+      setTimeout(() => {
+        fishResult.textContent = "Клюёт! Кликай по свинкам, чтобы поймать!";
+        spawnFish();
+      }, 1200);
+    }, 200);
+  });
+  spawnFish();
+
+  /* ============ ДРОВА ============ */
+  const woodTruck = document.getElementById("woodTruck");
+  const woodShed = document.getElementById("woodShed");
+  const woodTruckCount = document.getElementById("woodTruckCount");
+  const woodShedCount = document.getElementById("woodShedCount");
+  const woodResult = document.getElementById("woodResult");
+  const soloveySpeech = document.getElementById("soloveySpeech");
+  let woodPlaying = false, woodStake = 0, woodLoaded = 0, woodTotal = 12;
+
+  function buildWoodTruck() {
+    woodTruck.innerHTML = "";
+    for (let i = 0; i < woodTotal; i++) {
+      const log = document.createElement("div");
+      log.className = "wood-log";
+      log.textContent = "бревно";
+      log.dataset.idx = i;
+      log.addEventListener("click", () => moveLog(log));
+      woodTruck.appendChild(log);
+    }
+    woodTruckCount.textContent = `Дров в машине: ${woodTotal}`;
+  }
+  function buildWoodShed() {
+    woodShed.innerHTML = "";
+    woodShedCount.textContent = "В дровнике: 0";
+  }
+  function moveLog(log) {
+    if (!woodPlaying) { toast("Сначала нажми «Начать таскать дрова»"); return; }
+    if (log.classList.contains("taken")) return;
+    log.classList.add("taken");
+    woodLoaded++;
+    const shedLog = document.createElement("div");
+    shedLog.className = "wood-shed-log";
+    woodShed.appendChild(shedLog);
+    woodTruckCount.textContent = `Дров в машине: ${woodTotal - woodLoaded}`;
+    woodShedCount.textContent = `В дровнике: ${woodLoaded}`;
+    const reward = Math.round(woodStake / woodTotal);
+    balance += reward; updateBalance(true);
+    woodResult.className = "result-box win";
+    woodResult.innerHTML = `Соловей принёс бревно! <b>+${fmt(reward)} ₽</b>`;
+    soloveySpeech.textContent = ["Эй, Егор! Помогай дрова таскать!", "Ни шагу вперёд, только назад!", "Хорошо таскаешь, Егор!", "Ещё бревно в дровник!"][Math.floor(Math.random() * 4)];
+    soloveySpeech.classList.add("show");
+    setTimeout(() => soloveySpeech.classList.remove("show"), 1500);
+    if (woodLoaded >= woodTotal) {
+      woodPlaying = false;
+      const bonus = Math.round(woodStake * 0.5);
+      balance += bonus; updateBalance(true);
+      woodResult.className = "result-box win";
+      woodResult.innerHTML = `🎉 Все дрова в дровнике! Бонус Соловья: <b>+${fmt(bonus)} ₽</b>`;
+      showResult("Дрова дотаскал!", bonus, "Соловей доволен", true);
+      speak("Все дрова в дровнике! Соловей доволен!", 1, 1.1);
+      document.getElementById("woodStart").textContent = "🪵 Начать заново";
+    }
+  }
+  document.getElementById("woodStart").addEventListener("click", () => {
+    const bet = parseInt(document.getElementById("woodBet").value, 10) || 0;
+    if (!canBet(bet)) return;
+    balance -= bet; updateBalance(true);
+    woodPlaying = true; woodStake = bet; woodLoaded = 0;
+    buildWoodTruck(); buildWoodShed();
+    woodResult.className = "result-box";
+    woodResult.innerHTML = `Ставка <b>${fmt(bet)} ₽</b>. Кликай по дровам — за каждое +${fmt(Math.round(bet/woodTotal))} ₽`;
+    soloveySpeech.textContent = "Эй, Егор! Помогай дрова таскать!";
+    soloveySpeech.classList.add("show");
+    setTimeout(() => soloveySpeech.classList.remove("show"), 2000);
+    document.getElementById("woodStart").textContent = "🪵 Таскаем…";
+  });
+  buildWoodTruck(); buildWoodShed();
+
+  /* ============ БИТВА В СПОРТЗАЛЕ ============ */
+  const ENEMY_TYPES = {
+    slime: {
+      name: "Слизень", emoji: "🟢", mult: 1, hp: 30, atk: 3,
+      svg: `<ellipse cx="60" cy="130" rx="45" ry="25" fill="#4ade80" stroke="#166534" stroke-width="3"/>
+            <ellipse cx="60" cy="110" rx="40" ry="35" fill="#22c55e" stroke="#166534" stroke-width="3"/>
+            <ellipse cx="60" cy="105" rx="28" ry="22" fill="#86efac" opacity="0.5"/>
+            <circle cx="48" cy="100" r="6" fill="#fff"/><circle cx="72" cy="100" r="6" fill="#fff"/>
+            <circle cx="49" cy="101" r="3" fill="#1a0b2e"/><circle cx="73" cy="101" r="3" fill="#1a0b2e"/>
+            <path d="M 45 118 Q 60 126 75 118" stroke="#166534" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <ellipse cx="40" cy="140" rx="8" ry="4" fill="#166534" opacity="0.4"/>
+            <ellipse cx="80" cy="140" rx="8" ry="4" fill="#166534" opacity="0.4"/>`
+    },
+    crow: {
+      name: "Ворон", emoji: "🦅", mult: 3, hp: 60, atk: 6,
+      svg: `<ellipse cx="60" cy="130" rx="35" ry="25" fill="#1a1a2e" stroke="#0a0518" stroke-width="3"/>
+            <circle cx="60" cy="90" r="30" fill="#0a0518" stroke="#000" stroke-width="3"/>
+            <path d="M 45 75 Q 35 60 50 70 Z" fill="#1a1a2e"/>
+            <path d="M 75 75 Q 85 60 70 70 Z" fill="#1a1a2e"/>
+            <circle cx="50" cy="85" r="7" fill="#fff"/>
+            <circle cx="52" cy="86" r="4" fill="#ff5252"/>
+            <circle cx="52" cy="86" r="2" fill="#1a0b2e"/>
+            <path d="M 60 100 L 50 120 L 60 115 L 70 120 Z" fill="#ff8a00" stroke="#b45309" stroke-width="2"/>
+            <path d="M 30 110 Q 15 130 40 135" stroke="#1a1a2e" stroke-width="8" fill="none" stroke-linecap="round"/>
+            <path d="M 90 110 Q 105 130 80 135" stroke="#1a1a2e" stroke-width="8" fill="none" stroke-linecap="round"/>
+            <path d="M 45 145 L 40 155 M 75 145 L 80 155" stroke="#ff8a00" stroke-width="3" stroke-linecap="round"/>`
+    },
+    kursach: {
+      name: "Курсач (босс)", emoji: "📚", mult: 0, hp: 150, atk: 12,
+      svg: `<rect x="25" y="40" width="70" height="90" rx="4" fill="#7b2cff" stroke="#4a1a8a" stroke-width="3"/>
+            <rect x="25" y="40" width="70" height="20" rx="4" fill="#a855f7" stroke="#4a1a8a" stroke-width="2"/>
+            <text x="60" y="75" text-anchor="middle" font-size="14" font-weight="900" fill="#fff" font-family="Arial">КУРСАЧ</text>
+            <text x="60" y="95" text-anchor="middle" font-size="10" font-weight="700" fill="#fff6b0" font-family="Arial">СЕМЕСТРОВАЯ</text>
+            <text x="60" y="110" text-anchor="middle" font-size="9" font-weight="700" fill="#ff8a00" font-family="Arial">РАБОТА</text>
+            <path d="M 30 45 L 20 35 M 90 45 L 100 35" stroke="#7b2cff" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="60" cy="135" r="6" fill="#ff5252"/>
+            <circle cx="60" cy="135" r="3" fill="#fff"/>
+            <path d="M 40 135 L 20 150 M 80 135 L 100 150" stroke="#7b2cff" stroke-width="4" stroke-linecap="round"/>`
+    }
+  };
+
+  const battleState = {
+    enemyKey: "slime", enemyHp: 30, enemyMaxHp: 30,
+    egorHp: 100, egorMaxHp: 100,
+    wins: 0, total: 0, kursachDefeated: false, busy: false
+  };
+
+  const enemySvgEl = document.getElementById("enemySvg");
+  const enemyNameEl = document.getElementById("enemyName");
+  const enemyHpFill = document.getElementById("enemyHpFill");
+  const enemyHpText = document.getElementById("enemyHpText");
+  const egorHpFill = document.getElementById("egorHpFill");
+  const egorHpText = document.getElementById("egorHpText");
+  const battleResult = document.getElementById("battleResult");
+  const battleLogEl = document.getElementById("battleLog");
+  const battleWinsEl = document.getElementById("battleWins");
+  const battleTotalEl = document.getElementById("battleTotal");
+  const battleKursachEl = document.getElementById("battleKursach");
+  const fighterEgor = document.getElementById("fighterEgor");
+  const fighterEnemy = document.getElementById("fighterEnemy");
+
+  function setEnemy(key) {
+    const e = ENEMY_TYPES[key];
+    battleState.enemyKey = key;
+    battleState.enemyMaxHp = e.hp;
+    battleState.enemyHp = e.hp;
+    enemyNameEl.textContent = e.name;
+    enemySvgEl.innerHTML = e.svg;
+    enemySvgEl.setAttribute("viewBox", "0 0 120 160");
+    updateBattleHp();
+    document.querySelectorAll("#enemyPicker .enemy-btn").forEach(b => {
+      b.classList.toggle("active", b.dataset.enemy === key);
+    });
+    battleResult.className = "result-box";
+    battleResult.textContent = `Враг: ${e.name}. HP: ${e.hp}. ${key === "kursach" ? "⚠️ Осторожно: если убьёшь — баланс обнулится!" : "Жми «Атаковать»."}`;
+  }
+
+  function updateBattleHp() {
+    egorHpFill.style.width = Math.max(0, (battleState.egorHp / battleState.egorMaxHp) * 100) + "%";
+    egorHpText.textContent = `HP: ${Math.max(0, battleState.egorHp)}/${battleState.egorMaxHp}`;
+    enemyHpFill.style.width = Math.max(0, (battleState.enemyHp / battleState.enemyMaxHp) * 100) + "%";
+    enemyHpText.textContent = `HP: ${Math.max(0, battleState.enemyHp)}/${battleState.enemyMaxHp}`;
+  }
+
+  function addBattleLog(text, type) {
+    const div = document.createElement("div");
+    if (type) div.className = type;
+    div.textContent = text;
+    battleLogEl.appendChild(div);
+    battleLogEl.scrollTop = battleLogEl.scrollHeight;
+    while (battleLogEl.children.length > 12) battleLogEl.removeChild(battleLogEl.firstChild);
+  }
+
+  function spawnDamagePop(x, y, text, heal) {
+    const pop = document.createElement("div");
+    pop.className = "damage-pop" + (heal ? " heal" : "");
+    pop.textContent = text;
+    pop.style.left = x + "px"; pop.style.top = y + "px";
+    document.getElementById("battleStage").appendChild(pop);
+    setTimeout(() => pop.remove(), 900);
+  }
+
+  document.querySelectorAll("#enemyPicker .enemy-btn").forEach(b => {
+    b.addEventListener("click", () => {
+      if (battleState.busy) return;
+      setEnemy(b.dataset.enemy);
+    });
+  });
+
+  document.getElementById("battleAttack").addEventListener("click", () => {
+    if (battleState.busy) return;
+    const bet = parseInt(document.getElementById("battleBet").value, 10) || 0;
+    if (bet < 1) { toast("Введи ставку"); return; }
+    if (bet > MAX_STAKE) { toast("Максимум — 100 000 ₽"); return; }
+    const e = ENEMY_TYPES[battleState.enemyKey];
+    battleState.busy = true;
+
+    const egorDamage = Math.max(1, Math.round(e.atk * (0.7 + Math.random() * 0.6)));
+    battleState.egorHp -= egorDamage;
+    fighterEgor.classList.add("hit");
+    setTimeout(() => fighterEgor.classList.remove("hit"), 300);
+    const egorRect = fighterEgor.getBoundingClientRect();
+    const stageRect = document.getElementById("battleStage").getBoundingClientRect();
+    spawnDamagePop(egorRect.left - stageRect.left + egorRect.width / 2, egorRect.top - stageRect.top + 20, "-" + egorDamage);
+    addBattleLog(`${e.name} бьёт Егора на ${egorDamage} HP.`, "lose");
+
+    const dmg = Math.max(5, Math.round(20 * (0.8 + Math.random() * 0.5)));
+    battleState.enemyHp -= dmg;
+    fighterEnemy.classList.add("hit");
+    setTimeout(() => fighterEnemy.classList.remove("hit"), 300);
+    const enemyRect = fighterEnemy.getBoundingClientRect();
+    spawnDamagePop(enemyRect.left - stageRect.left + enemyRect.width / 2, enemyRect.top - stageRect.top + 20, "-" + dmg);
+    addBattleLog(`Егор бьёт ${e.name} на ${dmg} HP.`, "win");
+    updateBattleHp();
+
+    if (battleState.enemyHp <= 0) {
+      battleState.total++;
+      battleTotalEl.textContent = battleState.total;
+      fighterEnemy.classList.add("dying");
+      addBattleLog(`✅ Егор победил: ${e.name}!`, "win");
+
+      if (battleState.enemyKey === "kursach") {
+        battleState.kursachDefeated = true;
+        battleKursachEl.textContent = "побеждён 💀";
+        battleKursachEl.style.color = "#ff5252";
+        const oldBalance = balance;
+        balance = 0;
+        updateBalance(true);
+        addBattleLog(`💀 ЕГОР УБИЛ КУРСАЧ! Баланс обнулён с ${fmt(oldBalance)} ₽ до 0 ₽!`, "danger");
+        battleResult.className = "result-box lose";
+        battleResult.innerHTML = `💀 Егор убил <b>Курсач</b>! За это — <b>0 ₽</b>. Баланс обнулён: было ${fmt(oldBalance)} ₽, стало 0 ₽.<br><b style="color:#ff5252">Ни шагу вперёд, только назад. Бросай казино!</b>`;
+        speakCategory("kursach");
+        showResult("Курсач убит!", -oldBalance, "Баланс обнулён до 0 ₽. Бросай казино!", false);
+        setTimeout(() => {
+          fighterEnemy.classList.remove("dying");
+          setEnemy("slime");
+          battleState.egorHp = battleState.egorMaxHp;
+          battleState.busy = false;
+          updateBattleHp();
+        }, 1500);
+        return;
+      }
+
+      const winAmount = bet * e.mult;
+      balance += winAmount; updateBalance(true);
+      battleState.wins++;
+      battleWinsEl.textContent = battleState.wins;
+      battleResult.className = "result-box win";
+      battleResult.innerHTML = `🏆 Егор победил <b>${e.name}</b>!<br><b>+${fmt(winAmount)} ₽ (x${e.mult})</b>`;
+      showResult("Победа!", winAmount, `Победа над ${e.name}`, true);
+      speakCategory(battleState.enemyKey === "crow" ? "crow" : "slime");
+
+      setTimeout(() => {
+        fighterEnemy.classList.remove("dying");
+        setEnemy(battleState.enemyKey);
+        battleState.busy = false;
+        if (battleState.egorHp < battleState.egorMaxHp * 0.3) {
+          battleState.egorHp = battleState.egorMaxHp;
+          addBattleLog("💚 Егор отдохнул и восстановил HP.", "win");
+        }
+        updateBattleHp();
+      }, 1200);
+      return;
+    }
+
+    if (battleState.egorHp <= 0) {
+      battleState.egorHp = 0;
+      updateBattleHp();
+      addBattleLog(`💀 Егор проиграл бой против ${e.name}!`, "danger");
+      battleResult.className = "result-box lose";
+      battleResult.innerHTML = `💀 Егор проиграл! Восстановление HP...`;
+      setTimeout(() => {
+        battleState.egorHp = battleState.egorMaxHp;
+        updateBattleHp();
+        setEnemy(battleState.enemyKey);
+        battleState.busy = false;
+        addBattleLog("💚 Егор восстановил HP и готов к новому бою.", "win");
+      }, 1500);
+      return;
+    }
+
+    setTimeout(() => { battleState.busy = false; }, 400);
+  });
+
+  setEnemy("slime");
+
+  /* ============ ДЕРЕВО ЕГОРА ============ */
+  let treeHealth = 100;
+  const treeHealthFill = document.getElementById("treeHealthFill");
+  const treeHealthLabel = document.getElementById("treeHealthLabel");
+  const treeResult = document.getElementById("treeResult");
+  const treeStage = document.getElementById("treeStage");
+  const treeLeaves = document.querySelectorAll(".tree-leaf");
+  const treeBranches = document.querySelectorAll(".tree-branch");
+  const treeTrunk = document.querySelector(".tree-trunk");
+
+  function updateTreeVisual() {
+    const h = Math.max(0, Math.min(100, treeHealth));
+    treeHealthFill.style.width = h + "%";
+    treeHealthLabel.textContent = `Здоровье дерева: ${Math.round(h)}%`;
+    if (h > 60) treeHealthFill.style.background = "linear-gradient(90deg,#4ade80,#facc15)";
+    else if (h > 30) treeHealthFill.style.background = "linear-gradient(90deg,#facc15,#f97316)";
+    else treeHealthFill.style.background = "linear-gradient(90deg,#f97316,#ef4444)";
+
+    treeLeaves.forEach((leaf, i) => {
+      const threshold = (i + 1) / treeLeaves.length * 100;
+      if (h < threshold - 15) {
+        leaf.setAttribute("fill", "url(#leafDead)");
+        leaf.style.opacity = "0.25";
+        leaf.style.transform = `scale(${0.5 + h/200})`;
+      } else if (h < threshold) {
+        leaf.setAttribute("fill", "url(#leafDry)");
+        leaf.style.opacity = "0.7";
+        leaf.style.transform = `scale(${0.7 + h/300})`;
+      } else {
+        leaf.setAttribute("fill", i % 2 === 0 ? "url(#leafG)" : "url(#leafG2)");
+        leaf.style.opacity = "1";
+        leaf.style.transform = "scale(1)";
+      }
+    });
+
+    treeBranches.forEach((b, i) => {
+      const threshold = (i + 1) / treeBranches.length * 100;
+      if (h < threshold - 20) {
+        b.style.transform = `rotate(${(i%2===0?-1:1) * 15}deg) scaleY(${0.6 + h/200})`;
+        b.style.opacity = "0.5";
+      } else {
+        b.style.transform = "rotate(0deg) scaleY(1)";
+        b.style.opacity = "1";
+      }
+    });
+
+    if (h < 30) { treeTrunk.style.fill = "#2a1a0a"; treeTrunk.style.opacity = "0.8"; }
+    else if (h < 60) { treeTrunk.style.fill = "#4a2a10"; }
+    else { treeTrunk.style.fill = "url(#trunkG)"; }
+  }
+
+  function makeFallingLeaves(count) {
+    for (let i = 0; i < count; i++) {
+      const leaf = document.createElement("div");
+      leaf.className = "falling-leaf";
+      leaf.textContent = ["🍂", "🍁", "🍃"][Math.floor(Math.random() * 3)];
+      leaf.style.left = (20 + Math.random() * 60) + "%";
+      leaf.style.top = (10 + Math.random() * 30) + "%";
+      leaf.style.animationDelay = (Math.random() * 0.5) + "s";
+      treeStage.appendChild(leaf);
+      setTimeout(() => leaf.remove(), 2500);
+    }
+  }
+
+  document.getElementById("treeContinueBtn").addEventListener("click", () => {
+    treeHealth = Math.max(0, treeHealth - 20);
+    updateTreeVisual();
+    makeFallingLeaves(Math.min(15, Math.round((100 - treeHealth) / 5)));
+    treeResult.className = "result-box lose";
+    if (treeHealth <= 0) {
+      treeResult.innerHTML = `💀 Егор продолжает играть. Дерево засохло полностью. Листья опали, ветки сломались. <b>Ни шагу вперёд, только назад.</b>`;
+      speak("Егор, дерево засохло. Бросай казино.", 0.9, 1);
+    } else {
+      treeResult.innerHTML = `😢 Егор продолжает играть. Дерево вянет… Здоровье: ${Math.round(treeHealth)}%.`;
+      speakCategory("tree");
+    }
+  });
+
+  document.getElementById("treeStopBtn").addEventListener("click", () => {
+    treeHealth = 100;
+    updateTreeVisual();
+    treeResult.className = "result-box win";
+    treeResult.innerHTML = `🌱 Егор остановился! Дерево ожило, листья зазеленели. <b>Ты не один. Бросай казино.</b>`;
+    speak("Егор, ты не один. Бросай казино. Дерево ожило!", 0.95, 1.1);
+  });
+
+  updateTreeVisual();
+
+  /* ============ ИНИЦИАЛИЗАЦИЯ ============ */
+  updateBalance();
+  makeBoard(); renderM3();
+  M3.stake = 0;
+  // первичный спавн прыщей, если открыта вкладка
+  setTimeout(() => { if (document.getElementById("page-pimples").classList.contains("active")) spawnPimples(); }, 300);
+</script>
+
+</body>
+</html>
